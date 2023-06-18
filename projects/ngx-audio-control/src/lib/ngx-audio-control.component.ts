@@ -2,13 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'lib-ngx-audio-control',
-  template: `
-    <p>
-      ngx-audio-control works!
-    </p>
-  `,
-  styles: [
-  ]
+  templateUrl: './ngx-audio-control.component.html',
+  styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent {
 
