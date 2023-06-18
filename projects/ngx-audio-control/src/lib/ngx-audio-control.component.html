@@ -1,0 +1,59 @@
+<div class="audio-player">
+    <audio id="player" preload="auto" #player (timeupdate)="updateSeekSlider()" (ended)="playNext()">
+        <source [src]="playerFile" type="audio/mp3">
+        Your browser not support audio player!
+    </audio>
+    <div class="controls">
+
+        <button (click)="previous()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 7L5 12L11 17V7Z" fill="currentColor" />
+                <path d="M13 7L19 12L13 17V7Z" fill="currentColor" />
+            </svg>
+        </button>
+
+        <button (click)="playPause()" id="playPauseButton">
+            <svg *ngIf="!isPaused" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 19H10V5H6V19ZM14 5V19H18V5H14Z" fill="currentColor" />
+            </svg>
+            <svg *ngIf="isPaused" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
+            </svg>
+        </button>
+
+        <button (click)="next()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 7L19 12L13 17V7Z" fill="currentColor" />
+                <path d="M11 7L5 12L11 17V7Z" fill="currentColor" />
+            </svg>
+        </button>
+        <input class="seek-slider" id="seekSlider" [value]="seekValue" type="range" [min]="seekMin" [max]="seekMax"
+            value="0" step="1" (input)="seekAudio($event)">
+
+        <div class="volume-control">
+            <button (click)="muteUnmute()" id="muteUnmuteButton">
+                <svg *ngIf="!isMuted" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 9V15H7L12 20V4L7 9H3Z" fill="currentColor" />
+                </svg>
+                <svg *ngIf="isMuted" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 9V15H7L12 20V4L7 9H3Z" fill="currentColor" />
+                    <path
+                        d="M13.5 10.5L15.5 8.5L17 10L18.5 8.5L20.5 10.5L18.5 12.5L20.5 14.5L18.5 16.5L17 14.5L15.5 16.5L13.5 14.5L15.5 12.5L13.5 10.5Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+            <input class="volume-slider" id="volumeSlider" type="range" min="0" max="1" value="1" step="0.01"
+                (input)="changeVolume($event)">
+        </div>
+    </div>
+    <div class="speed-control">
+        <button (click)="decreaseSpeed()">-</button>
+        <span class="speed-display" id="speedDisplay">{{speedDisplay}}</span>
+        <button (click)="increaseSpeed()">+</button>
+    </div>
+
+</div>
