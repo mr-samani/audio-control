@@ -1,4 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { formatTime } from '../helper/format-time';
+import { PlayList } from '../models/play-list';
 
 @Component({
   selector: 'ngx-audio-control',
@@ -14,15 +16,64 @@ export class NgxAudioControlComponent {
   seekMin = 0;
   speedDisplay = '1x';
   currentAudioIndex = 0;
-  audioFiles: string[] = [];
   playerFile = '';
+  audioFiles: PlayList[] = [];
+  @Input() set fileList(value: string[]) {
+    const files = value ?? [];
+    this.audioFiles = [];
+    for (let item of files) {
+      this.audioFiles.push({
+        fileAddress: item,
+        title: (item.replace(/\\/g,'/').split(/\//g).pop()) ?? 'no name'
+      });
+    }
+    this.initialize();
+  }
+
+
+
+  currentTime = '00:00';
+  totalTime = '00:00';
+  options = {
+    emptyListMessage: 'No any record'
+  };
+  showPlayList = false;
+
+  initialize() {
+    this.currentAudioIndex = 0;
+    this.speedDisplay = '1x';
+    this.seekValue = 0;
+    this.seekMax = 0;
+    this.seekMin = 0;
+    this.isPaused = false;
+    this.isMuted = false;
+    this.currentTime = '00:00';
+    this.totalTime = '00:00';
+    if (this.audioFiles.length > 0) {
+      this.playerFile = this.audioFiles[0].fileAddress;
+    } else {
+      this.playerFile = '';
+    }
+  }
+
+
+
+
   playPause() {
     if (this.player.nativeElement.paused) {
-      this.player.nativeElement.play();
+      this.play();
     } else {
-      this.player.nativeElement.pause();
+      this.pause();
     }
-    this.isPaused = !this.isPaused;
+  }
+
+  play() {
+    this.player.nativeElement.play();
+    this.isPaused = false;
+  }
+  pause() {
+    this.player.nativeElement.pause();
+    this.isPaused = true;
   }
 
 
@@ -38,8 +89,11 @@ export class NgxAudioControlComponent {
 
   updateSeekSlider() {
     this.seekValue = (this.player.nativeElement.currentTime / this.player.nativeElement.duration) * 100;
+    this.currentTime = formatTime(this.player.nativeElement.currentTime);
   }
-
+  onLoadMetaData() {
+    this.totalTime = formatTime(this.player.nativeElement.duration);
+  }
   seekAudio(ev: Event) {
     let value = (ev.target as any).value;
     this.player.nativeElement.currentTime = (value / 100) * this.player.nativeElement.duration;
@@ -66,8 +120,8 @@ export class NgxAudioControlComponent {
     if (this.currentAudioIndex < 0) {
       this.currentAudioIndex = this.audioFiles.length - 1;
     }
-    this.player.nativeElement.src = this.audioFiles[this.currentAudioIndex];
-    this.player.nativeElement.play();
+    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
+    this.play();
   }
 
   next() {
@@ -75,13 +129,21 @@ export class NgxAudioControlComponent {
     if (this.currentAudioIndex >= this.audioFiles.length) {
       this.currentAudioIndex = 0;
     }
-    this.player.nativeElement.src = this.audioFiles[this.currentAudioIndex];
-    this.player.nativeElement.play();
+    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
+    this.play();
   }
 
 
   playNext() {
 
   }
+
+
+
+
+
+
+
+
 
 }
