@@ -5,7 +5,7 @@
 - `ng new audio-player --create-application=false`
 
 ## add library
-- `ng new lib ngx-audio-player`
+- `ng g lib ngx-audio-control`
 
 ## add demo
 
