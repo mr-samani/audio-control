@@ -12,6 +12,9 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
+      "ngx-alert-modal": [
+        "dist/ngx-alert-modal"
+      ],
       "ngx-audio-control": [
         "dist/ngx-audio-control"
       ]
