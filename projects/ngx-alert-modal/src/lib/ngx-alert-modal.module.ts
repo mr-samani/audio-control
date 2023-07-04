@@ -5,12 +5,12 @@ import { NgxAlertModalComponent } from './ngx-alert-modal.component';
 
 @NgModule({
   declarations: [
-    NgxAlertModalComponent
+    NgxAlertModalComponent,
   ],
   imports: [
   ],
   exports: [
-    NgxAlertModalComponent
+    NgxAlertModalComponent,
   ]
 })
 export class NgxAlertModalModule { }

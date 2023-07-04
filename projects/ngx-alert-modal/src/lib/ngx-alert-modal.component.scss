@@ -1,0 +1,72 @@
+.ngx-alert-container {
+    background: #00000014;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .ngx-alert-inner {
+        background-color: white;
+        box-shadow: 0px 0px 36px 0px rgb(0 0 0 / 16%);
+        min-width: 400px;
+        min-height: 150px;
+        border-radius: 6px;
+        animation: ShowAlert ease-in 200ms;
+    }
+
+    .ngx-alert-header {
+        display: flex;
+        align-items: center;
+        font-size: 30px;
+        min-height: 40px;
+        padding: 10px;
+
+        .ngx-alert-title {
+            flex: auto;
+        }
+
+        .ngx-alert-close {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+
+    .ngx-alert-body {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .ngx-alert-footer {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        button {}
+    }
+}
+
+
+
+@keyframes ShowAlert {
+    from {
+        transform: scale(0.3);
+        opacity: .5;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
