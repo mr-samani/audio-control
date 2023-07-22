@@ -1,6 +1,6 @@
 <div class="audio-player">
     <audio id="player" preload="auto" #player (timeupdate)="updateSeekSlider()" (loadedmetadata)="onLoadMetaData()"
-        (ended)="playNext()">
+        (ended)="playNext()" (readystatechange)="readystatechange()" (stalled)="stalled()">
         <source [src]="playerFile" type="audio/mp3">
         Your browser not support audio player!
     </audio>

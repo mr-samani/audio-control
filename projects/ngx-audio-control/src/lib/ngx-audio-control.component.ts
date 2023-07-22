@@ -9,6 +9,7 @@ import { PlayList } from '../models/play-list';
 })
 export class NgxAudioControlComponent {
   @ViewChild('player', { static: true }) player!: ElementRef<HTMLAudioElement>;
+  isReady = false;
   isPaused = false;
   isMuted = false;
   seekValue = 0;
@@ -24,7 +25,7 @@ export class NgxAudioControlComponent {
     for (let item of files) {
       this.audioFiles.push({
         fileAddress: item,
-        title: (item.replace(/\\/g,'/').split(/\//g).pop()) ?? 'no name'
+        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
       });
     }
     this.initialize();
@@ -54,6 +55,7 @@ export class NgxAudioControlComponent {
     } else {
       this.playerFile = '';
     }
+
   }
 
 
@@ -95,6 +97,7 @@ export class NgxAudioControlComponent {
     this.totalTime = formatTime(this.player.nativeElement.duration);
   }
   seekAudio(ev: Event) {
+    debugger
     let value = (ev.target as any).value;
     this.player.nativeElement.currentTime = (value / 100) * this.player.nativeElement.duration;
   }
@@ -144,6 +147,10 @@ export class NgxAudioControlComponent {
 
 
 
-
-
+  readystatechange() {
+    console.log('state', this.player.nativeElement.readyState);
+  }
+  stalled() {
+    console.log('Playback stalled due to network issues.', this.player.nativeElement.networkState);
+  }
 }
