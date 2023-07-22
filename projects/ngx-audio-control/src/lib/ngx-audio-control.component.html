@@ -1,14 +1,9 @@
 <div class="audio-player">
-    <audio id="player" preload="auto" #player (timeupdate)="updateSeekSlider()" (loadedmetadata)="onLoadMetaData()" (loadeddata)="onLoadData()"
-        (ended)="playNext()" (readystatechange)="readystatechange()" (stalled)="stalled()">
-        <source [src]="playerFile" type="audio/mp3">
-        Your browser not support audio player!
-    </audio>
     <div class="controls">
         <div class="time-seeker">
             <span> {{currentTime}}</span>
-            <input class="seek-slider" id="seekSlider" [value]="seekValue" type="range" [min]="0" [max]="100"
-                value="0" step="1" (input)="seekAudio($event)">
+            <input class="seek-slider" id="seekSlider" [value]="seekValue" type="range" [min]="0" [max]="100" value="0"
+                step="1" (input)="seekAudio($event)">
             <span> {{totalTime}}</span>
         </div>
         <div class="buttons">
@@ -86,7 +81,7 @@
         {{options.emptyListMessage}}
     </div>
     <div class="list-item" *ngFor="let item of audioFiles;let i = index" [class.active]="i==currentAudioIndex"
-    (click)="onClickPlayList(i)">
+        (click)="onClickPlayList(i)">
         {{item.title}}
     </div>
 </div>
@@ -100,4 +95,6 @@
     this.isMuted = {{isMuted}};
     this.currentTime = {{currentTime}};
     this.totalTime = {{totalTime}};
+
+    Buffer=Length:{{player.buffered.length}}
 </pre>

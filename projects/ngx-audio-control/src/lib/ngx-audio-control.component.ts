@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { formatTime } from '../helper/format-time';
 import { PlayList } from '../models/play-list';
+import { READY_STATES } from '../helper/ready-states';
+import { NETWORK_STATES } from '../helper/network-states';
 
 @Component({
   selector: 'ngx-audio-control',
@@ -8,14 +10,13 @@ import { PlayList } from '../models/play-list';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent {
-  @ViewChild('player', { static: true }) player!: ElementRef<HTMLAudioElement>;
+  player = new Audio();
   isReady = false;
   isPaused = true;
   isMuted = false;
   seekValue = 0;
   speedDisplay = '1x';
   currentAudioIndex = 0;
-  playerFile = '';
   audioFiles: PlayList[] = [];
   @Input() set fileList(value: string[]) {
     const files = value ?? [];
@@ -39,26 +40,37 @@ export class NgxAudioControlComponent {
   showPlayList = false;
 
   initialize() {
-    this.currentAudioIndex = 0;
     this.speedDisplay = '1x';
     this.seekValue = 0;
     this.isPaused = true;
     this.isMuted = false;
     this.currentTime = '00:00';
     this.totalTime = '00:00';
+    this.player = new Audio();
     if (this.audioFiles.length > 0) {
-      this.playerFile = this.audioFiles[0].fileAddress;
+      this.player.src = this.audioFiles[this.currentAudioIndex].fileAddress;
     } else {
-      this.playerFile = '';
+      this.player.src = '';
     }
+    this.player.currentTime = 0;
+    this.player.preload = 'auto';
+    this.player.disableRemotePlayback = false;
+
+    this.player.addEventListener('timeupdate', () => this.updateSeekSlider());
+    this.player.addEventListener('loadedmetadata', () => this.onLoadMetaData());
+    this.player.addEventListener('loadeddata', () => this.onLoadData());
+    this.player.addEventListener('ended', () => this.playNext());
+    this.player.addEventListener('oncanplaythrough', (ev) => this.oncanplaythrough(ev));
 
   }
 
-
+  oncanplaythrough(ev: any) {
+    console.log('oncanplaythrough', ev);
+  }
 
 
   playPause() {
-    if (this.player.nativeElement.paused) {
+    if (this.player.paused) {
       this.play();
     } else {
       this.pause();
@@ -66,67 +78,69 @@ export class NgxAudioControlComponent {
   }
 
   play() {
-    this.player.nativeElement.play();
+    this.player.play();
     this.isPaused = false;
-    this.onLoadData();
   }
 
   pause() {
-    this.player.nativeElement.pause();
+    this.player.pause();
     this.isPaused = true;
   }
 
 
 
   muteUnmute() {
-    if (this.player.nativeElement.muted) {
-      this.player.nativeElement.muted = false;
+    if (this.player.muted) {
+      this.player.muted = false;
     } else {
-      this.player.nativeElement.muted = true;
+      this.player.muted = true;
     }
-    this.isMuted = this.player.nativeElement.muted;
+    this.isMuted = this.player.muted;
   }
 
   updateSeekSlider() {
-    this.seekValue = (this.player.nativeElement.currentTime / this.player.nativeElement.duration) * 100;
-    this.currentTime = formatTime(this.player.nativeElement.currentTime);
+    this.seekValue = (this.player.currentTime / this.player.duration) * 100;
+    this.currentTime = formatTime(this.player.currentTime);
   }
+
   onLoadMetaData() {
-    this.totalTime = formatTime(this.player.nativeElement.duration);
+    this.totalTime = formatTime(this.player.duration);
   }
 
   onLoadData() {
-    this.totalTime = formatTime(this.player.nativeElement.duration);
+    this.totalTime = formatTime(this.player.duration);
+    console.log('state', READY_STATES[this.player.readyState.toString()]);
+    console.log('Playback stalled due to network issues.', NETWORK_STATES[this.player.networkState]);
+
   }
 
   seekAudio(ev: Event) {
     let value = (ev.target as any).value;
-    this.player.nativeElement.currentTime = (value / 100) * this.player.nativeElement.duration;
+    this.player.currentTime = (value / 100) * this.player.duration;
   }
 
   increaseSpeed() {
-    this.player.nativeElement.playbackRate += 0.1;
-    this.speedDisplay = `${this.player.nativeElement.playbackRate.toFixed(1)}x`;
+    this.player.playbackRate += 0.1;
+    this.speedDisplay = `${this.player.playbackRate.toFixed(1)}x`;
   }
 
   decreaseSpeed() {
-    if (this.player.nativeElement.playbackRate > 0.1) {
-      this.player.nativeElement.playbackRate -= 0.1;
-      this.speedDisplay = `${this.player.nativeElement.playbackRate.toFixed(1)}x`;
+    if (this.player.playbackRate > 0.1) {
+      this.player.playbackRate -= 0.1;
+      this.speedDisplay = `${this.player.playbackRate.toFixed(1)}x`;
     }
   }
 
   changeVolume(ev: Event) {
     let value = (ev.target as any).value;
-    this.player.nativeElement.volume = value;
+    this.player.volume = value;
   }
   previous() {
     this.currentAudioIndex--;
     if (this.currentAudioIndex < 0) {
       this.currentAudioIndex = this.audioFiles.length - 1;
     }
-    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
-    this.player.nativeElement.currentTime = 0;
+    this.initialize();
     this.play();
   }
 
@@ -135,8 +149,7 @@ export class NgxAudioControlComponent {
     if (this.currentAudioIndex >= this.audioFiles.length) {
       this.currentAudioIndex = 0;
     }
-    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
-    this.player.nativeElement.currentTime = 0;
+    this.initialize();
     this.play();
   }
 
@@ -147,19 +160,10 @@ export class NgxAudioControlComponent {
 
   onClickPlayList(index: number) {
     this.currentAudioIndex = index;
-    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
-    this.player.nativeElement.currentTime = 0;
+    this.initialize();
     this.play();
   }
 
 
 
-
-
-  readystatechange() {
-    console.log('state', this.player.nativeElement.readyState);
-  }
-  stalled() {
-    console.log('Playback stalled due to network issues.', this.player.nativeElement.networkState);
-  }
 }
