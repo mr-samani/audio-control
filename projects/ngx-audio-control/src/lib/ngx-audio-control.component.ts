@@ -10,11 +10,9 @@ import { PlayList } from '../models/play-list';
 export class NgxAudioControlComponent {
   @ViewChild('player', { static: true }) player!: ElementRef<HTMLAudioElement>;
   isReady = false;
-  isPaused = false;
+  isPaused = true;
   isMuted = false;
   seekValue = 0;
-  seekMax = 0;
-  seekMin = 0;
   speedDisplay = '1x';
   currentAudioIndex = 0;
   playerFile = '';
@@ -44,9 +42,7 @@ export class NgxAudioControlComponent {
     this.currentAudioIndex = 0;
     this.speedDisplay = '1x';
     this.seekValue = 0;
-    this.seekMax = 0;
-    this.seekMin = 0;
-    this.isPaused = false;
+    this.isPaused = true;
     this.isMuted = false;
     this.currentTime = '00:00';
     this.totalTime = '00:00';
@@ -97,7 +93,6 @@ export class NgxAudioControlComponent {
     this.totalTime = formatTime(this.player.nativeElement.duration);
   }
   seekAudio(ev: Event) {
-    debugger
     let value = (ev.target as any).value;
     this.player.nativeElement.currentTime = (value / 100) * this.player.nativeElement.duration;
   }
