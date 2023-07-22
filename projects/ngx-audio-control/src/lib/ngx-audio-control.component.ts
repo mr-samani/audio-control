@@ -68,7 +68,9 @@ export class NgxAudioControlComponent {
   play() {
     this.player.nativeElement.play();
     this.isPaused = false;
+    this.onLoadData();
   }
+
   pause() {
     this.player.nativeElement.pause();
     this.isPaused = true;
@@ -82,7 +84,7 @@ export class NgxAudioControlComponent {
     } else {
       this.player.nativeElement.muted = true;
     }
-    this.isMuted = !this.isMuted;
+    this.isMuted = this.player.nativeElement.muted;
   }
 
   updateSeekSlider() {
@@ -92,6 +94,11 @@ export class NgxAudioControlComponent {
   onLoadMetaData() {
     this.totalTime = formatTime(this.player.nativeElement.duration);
   }
+
+  onLoadData() {
+    this.totalTime = formatTime(this.player.nativeElement.duration);
+  }
+
   seekAudio(ev: Event) {
     let value = (ev.target as any).value;
     this.player.nativeElement.currentTime = (value / 100) * this.player.nativeElement.duration;
@@ -119,6 +126,7 @@ export class NgxAudioControlComponent {
       this.currentAudioIndex = this.audioFiles.length - 1;
     }
     this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
+    this.player.nativeElement.currentTime = 0;
     this.play();
   }
 
@@ -128,15 +136,21 @@ export class NgxAudioControlComponent {
       this.currentAudioIndex = 0;
     }
     this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
+    this.player.nativeElement.currentTime = 0;
     this.play();
   }
 
 
   playNext() {
-
+    this.next();
   }
 
-
+  onClickPlayList(index: number) {
+    this.currentAudioIndex = index;
+    this.playerFile = this.audioFiles[this.currentAudioIndex].fileAddress;
+    this.player.nativeElement.currentTime = 0;
+    this.play();
+  }
 
 
 

@@ -1,5 +1,5 @@
 <div class="audio-player">
-    <audio id="player" preload="auto" #player (timeupdate)="updateSeekSlider()" (loadedmetadata)="onLoadMetaData()"
+    <audio id="player" preload="auto" #player (timeupdate)="updateSeekSlider()" (loadedmetadata)="onLoadMetaData()" (loadeddata)="onLoadData()"
         (ended)="playNext()" (readystatechange)="readystatechange()" (stalled)="stalled()">
         <source [src]="playerFile" type="audio/mp3">
         Your browser not support audio player!
@@ -85,7 +85,19 @@
     <div class="list-item disabled" *ngIf="audioFiles.length===0">
         {{options.emptyListMessage}}
     </div>
-    <div class="list-item" *ngFor="let item of audioFiles;let i = index" [class.active]="i==currentAudioIndex">
+    <div class="list-item" *ngFor="let item of audioFiles;let i = index" [class.active]="i==currentAudioIndex"
+    (click)="onClickPlayList(i)">
         {{item.title}}
     </div>
 </div>
+
+
+<pre>
+    this.currentAudioIndex = {{currentAudioIndex}};
+    this.speedDisplay = {{speedDisplay}};
+    this.seekValue = {{seekValue}};
+    this.isPaused = {{isPaused}};
+    this.isMuted = {{isMuted}};
+    this.currentTime = {{currentTime}};
+    this.totalTime = {{totalTime}};
+</pre>
