@@ -1,8 +1,8 @@
 <div class="ngx-alert-container" (click)="onOutSideClick()" [ngClass]="options.containerClass"
     [class.has-backdrop]="options.backdrop">
     <div class="ngx-alert-inner" (click)="innerOnClick($event)">
-        <div class="ngx-alert-header">
-            <button class="ngx-alert-close" (click)="close()" *ngIf="options.showCloseButton">
+        <div class="ngx-alert-header" *ngIf="options.showCloseButton">
+            <button class="ngx-alert-close" (click)="close()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                     <path
                         d="M312.1 375c9.369 9.369 9.369 24.57 0 33.94s-24.57 9.369-33.94 0L160 289.9l-119 119c-9.369 9.369-24.57 9.369-33.94 0s-9.369-24.57 0-33.94L126.1 256L7.027 136.1c-9.369-9.369-9.369-24.57 0-33.94s24.57-9.369 33.94 0L160 222.1l119-119c9.369-9.369 24.57-9.369 33.94 0s9.369 24.57 0 33.94L193.9 256L312.1 375z" />
@@ -57,10 +57,6 @@
             <span [innerHTML]="options.html"></span>
         </div>
         <div class="ngx-alert-footer">
-            <button *ngIf="options.showConfirmButton" class="btn-confirm" (click)="onConfirm()"
-                [attr.aria-label]="options.confirmButtonAriaLabel">
-                {{options.confirmButtonText}}
-            </button>
             <button *ngIf="options.showCancelButton" class="btn-cancel" (click)="onCancel()"
                 [attr.aria-label]="options.cancelButtonAriaLabel">
                 {{options.cancelButtonText}}
@@ -68,6 +64,10 @@
             <button *ngIf="options.showDenyButton" class="btn-deny" (click)="onDeny()"
                 [attr.aria-label]="options.denyButtonAriaLabel">
                 {{options.denyButtonText}}
+            </button>
+            <button *ngIf="options.showConfirmButton" class="btn-confirm" (click)="onConfirm()"
+                [attr.aria-label]="options.confirmButtonAriaLabel">
+                {{options.confirmButtonText}}
             </button>
         </div>
     </div>
