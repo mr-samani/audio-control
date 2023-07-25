@@ -58,10 +58,10 @@
             <button *ngIf="options.showConfirmButton" class="btn-confirm" (click)="onConfirm()">
                 {{options.confirmButtonText}}
             </button>
-            <button *ngIf="options.showCancelButton" class="btn-cancel" (click)="onConfirm()">
+            <button *ngIf="options.showCancelButton" class="btn-cancel" (click)="onCancel()">
                 {{options.cancelButtonText}}
             </button>
-            <button *ngIf="options.showDenyButton" class="btn-deny" (click)="onConfirm()">
+            <button *ngIf="options.showDenyButton" class="btn-deny" (click)="onDeny()">
                 {{options.denyButtonText}}
             </button>
         </div>

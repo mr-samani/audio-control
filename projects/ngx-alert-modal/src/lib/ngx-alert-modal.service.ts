@@ -1,7 +1,7 @@
 import {
   ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector,
 } from '@angular/core';
-import { AlertOptions } from './options';
+import { AlertOptions } from '../models/options';
 import { NgxAlertModalComponent } from './ngx-alert-modal.component';
 
 
@@ -19,7 +19,7 @@ export class NgxAlertModalService {
   ) { }
 
 
-  public fire(config: AlertOptions): Promise<any> {
+  public show(config: AlertOptions): Promise<any> {
     config = { ...(new AlertOptions()), ...config };
     return new Promise((resolve, reject) => {
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(NgxAlertModalComponent);
@@ -29,8 +29,9 @@ export class NgxAlertModalService {
       this.appendDialogComponentToBody(componentRef, config);
       componentRef.instance.options = config;
       componentRef.instance.index = this.insertedId;
-      componentRef.instance.onClose.subscribe((index) => {
-        this.removeDialogComponentFromBody(index);
+      componentRef.instance.onClose.subscribe((result) => {
+        this.removeDialogComponentFromBody(result.index);
+        resolve(result.result);
       });
       this.alerts.push(componentRef);
       this.insertedId++;

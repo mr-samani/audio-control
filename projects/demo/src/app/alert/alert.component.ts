@@ -21,7 +21,7 @@ export class AlertComponent implements OnInit {
 
 
   openModal() {
-    this.alert.fire({
+    this.alert.show({
       title: '404',
       text: 'test',
       icon: 'success',
@@ -29,7 +29,7 @@ export class AlertComponent implements OnInit {
       showDenyButton: true,
       showConfirmButton: true
     }).then(result => {
-
+      console.log(result);
     });
   }
 }
