@@ -2,6 +2,9 @@ export interface AlertResult<T = any> {
     readonly isConfirmed: boolean
     readonly isDenied: boolean
     readonly isDismissed: boolean
+    /**
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
     readonly value?: T
     readonly dismiss?: DismissReason
 }
@@ -14,6 +17,12 @@ export enum DismissReason {
     cancel,
     backdrop,
     close,
+    /**
+  * @description ❌⚠️NOT Implemented!⚠️❌
+  */
     esc,
+    /**
+  * @description ❌⚠️NOT Implemented!⚠️❌
+  */
     timer,
 }

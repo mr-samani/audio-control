@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertResult } from 'projects/ngx-alert-modal/src/models/alert-result';
+import { AlertOptions } from 'projects/ngx-alert-modal/src/models/options';
 import { NgxAlertModalService } from 'projects/ngx-alert-modal/src/public-api';
 
 @Component({
@@ -7,10 +9,13 @@ import { NgxAlertModalService } from 'projects/ngx-alert-modal/src/public-api';
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
+  options = new AlertOptions();
+  result?: AlertResult;
   constructor(
     private alert: NgxAlertModalService
   ) {
-
+    this.options.title = 'Message Title';
+    this.options.text = "Message Body";
   }
 
 
@@ -21,15 +26,9 @@ export class AlertComponent implements OnInit {
 
 
   openModal() {
-    this.alert.show({
-      title: '404',
-      text: 'test',
-      icon: 'success',
-      showCancelButton: true,
-      showDenyButton: true,
-      showConfirmButton: true
-    }).then(result => {
-      console.log(result);
-    });
+    this.alert.show(this.options)
+      .then(result => {
+        result = result;
+      });
   }
 }

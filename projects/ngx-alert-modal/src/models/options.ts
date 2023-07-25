@@ -3,11 +3,11 @@ export type AlertIcon = 'success' | 'error' | 'warning' | 'info' | 'question'
 
 export class AlertOptions {
     /**
-    * The title of the popup, as HTML.
+    * The title of the popup
     *
     * @default ''
     */
-    title?: string | HTMLElement = '';
+    title?: string = '';
 
     /**
      * A description for the popup.
@@ -18,9 +18,8 @@ export class AlertOptions {
 
     /**
      * A HTML description for the popup.
-     * If `text` and `html` parameters are provided in the same time, `html` will be used.
      *
-     * [Security] SweetAlert2 does NOT sanitize this parameter. It is the developer's responsibility
+     * [Security] we does NOT sanitize this parameter. It is the developer's responsibility
      * to escape any user input when using the `html` option, so XSS attacks would be prevented.
      *
      * @default ''
@@ -29,7 +28,7 @@ export class AlertOptions {
 
 
     /**
-     * Whether or not SweetAlert2 should show a full screen click-to-dismiss backdrop.
+     * Whether or not  should show a full screen click-to-dismiss backdrop.
      * Either a boolean value or a css background value (hex, rgb, rgba, url, etc.)
      *
      * @default true
@@ -50,8 +49,6 @@ export class AlertOptions {
 
     /**
      * If set to `false`, the user can't dismiss the popup by clicking outside it.
-     * You can also pass a custom function returning a boolean value, e.g. if you want
-     * to disable outside clicks for the loading state of a popup.
      *
      * @default true
      */
@@ -59,8 +56,6 @@ export class AlertOptions {
 
     /**
      * If set to `false`, the user can't dismiss the popup by pressing the Escape key.
-     * You can also pass a custom function returning a boolean value, e.g. if you want
-     * to disable the escape key for the loading state of a popup.
      *
      * @default true
      * @description ❌⚠️NOT Implemented!⚠️❌
@@ -70,7 +65,6 @@ export class AlertOptions {
     /**
      * If set to `false`, the user can't confirm the popup by pressing the Enter or Space keys,
      * unless they manually focus the confirm button.
-     * You can also pass a custom function returning a boolean value.
      *
      * @default true
      * @description ❌⚠️NOT Implemented!⚠️❌
@@ -80,7 +74,6 @@ export class AlertOptions {
 
     /**
      * If set to `false`, the "Confirm" button will not be shown.
-     * It can be useful when you're using custom HTML description.
      *
      * @default true
      */

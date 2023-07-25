@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { AlertOptions } from '../models/options';
 import { NgxAlertModalComponent } from './ngx-alert-modal.component';
+import { AlertResult } from '../models/alert-result';
 
 
 @Injectable({
@@ -19,7 +20,7 @@ export class NgxAlertModalService {
   ) { }
 
 
-  public show(config: AlertOptions): Promise<any> {
+  public show(config: AlertOptions): Promise<AlertResult<any>> {
     config = { ...(new AlertOptions()), ...config };
     return new Promise((resolve, reject) => {
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(NgxAlertModalComponent);

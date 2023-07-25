@@ -1,24 +1,256 @@
 # NgxAlertModal
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.0.
 
-## Code scaffolding
+Simple popup modal 
 
-Run `ng generate component component-name --project ngx-alert-modal` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-alert-modal`.
-> Note: Don't forget to add `--project ngx-alert-modal` or else it will be added to the default project in your `angular.json` file. 
+like sweetalert2 and fix bug show in legacy browser 
 
-## Build
+## 📦Demo
+Preview [Demo](https://github.com/angular/angular-cli)
 
-Run `ng build ngx-alert-modal` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Publishing
+## 🗃️ Install
+- NPM: npm i ngx-alert-modal
+- YARN: yarn add ngx-alert-modal
 
-After building your library with `ng build ngx-alert-modal`, go to the dist folder `cd dist/ngx-alert-modal` and run `npm publish`.
+## 🖥️Usage
+Import  `NgxAlertModalModule`  to your working module
+```
+import { NgxAlertModalModule } from  'ngx-alert-modal';
 
-## Running unit tests
+@NgModule({
+  imports: [
+    NgxAlertModalModule 
+  ]
+})
+export class AppModule { }
 
-Run `ng test ngx-alert-modal` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+## 💬For open popup
+```
+import { Component, OnInit } from '@angular/core';
+import { NgxAlertModalService } from 'ngx-alert-modal';
 
-## Further help
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html',
+  styleUrls: ['./demo.component.scss']
+})
+export class DemoComponent implements OnInit {
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+  constructor(
+    private alert: NgxAlertModalService
+  ) { }
+
+  ngOnInit(): void {
+  }
+
+
+  openPopup() {
+    this.alert.show({
+      title: 'Message Title',
+      text: 'Description',
+      icon: 'warning',
+      showConfirmButton: true,
+      showCancelButton: true,
+    }).then(r => {
+      console.log('result=', r);
+    });
+  }
+
+}
+```
+
+## ⚙️Options
+
+```
+export type AlertIcon = 'success' | 'error' | 'warning' | 'info' | 'question'
+
+export class AlertOptions {
+    /**
+    * The title of the popup
+    *
+    * @default ''
+    */
+    title?: string = '';
+
+    /**
+     * A description for the popup.
+     *
+     * @default ''
+     */
+    text?: string = '';
+
+    /**
+     * A HTML description for the popup.
+     *
+     * [Security] we does NOT sanitize this parameter. It is the developer's responsibility
+     * to escape any user input when using the `html` option, so XSS attacks would be prevented.
+     *
+     * @default ''
+     */
+    html?: string | HTMLElement = '';
+
+
+    /**
+     * Whether or not  should show a full screen click-to-dismiss backdrop.
+     * Either a boolean value or a css background value (hex, rgb, rgba, url, etc.)
+     *
+     * @default true
+     */
+    backdrop?: boolean = true;
+
+
+    icon?: AlertIcon;
+
+    /**
+     * Popup width, including paddings (`box-sizing: border-box`).
+     *
+     * @default undefined
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    width?: number | string
+
+
+    /**
+     * If set to `false`, the user can't dismiss the popup by clicking outside it.
+     *
+     * @default true
+     */
+    allowOutsideClick?: boolean = true;
+
+    /**
+     * If set to `false`, the user can't dismiss the popup by pressing the Escape key.
+     *
+     * @default true
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    allowEscapeKey?: boolean = true;
+
+    /**
+     * If set to `false`, the user can't confirm the popup by pressing the Enter or Space keys,
+     * unless they manually focus the confirm button.
+     *
+     * @default true
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    allowEnterKey?: boolean = true;
+
+
+    /**
+     * If set to `false`, the "Confirm" button will not be shown.
+     *
+     * @default true
+     */
+    showConfirmButton?: boolean = true;
+
+    /**
+     * If set to `true`, the "Deny" button will be shown, which the user can click on to deny the popup.
+     *
+     * @default false
+     */
+    showDenyButton?: boolean = false;
+
+    /**
+     * If set to `true`, the "Cancel" button will be shown, which the user can click on to dismiss the popup.
+     *
+     * @default false
+     */
+    showCancelButton?: boolean = true;
+
+    /**
+     * Use this to change the text on the "Confirm" button.
+     *
+     * @default 'OK'
+     */
+    confirmButtonText?: string = 'Ok';
+
+    /**
+     * Use this to change the text on the "Confirm" button.
+     *
+     * @default 'No'
+     */
+    denyButtonText?: string = 'No';
+
+    /**
+     * Use this to change the text on the "Cancel" button.
+     *
+     * @default 'Cancel'
+     */
+    cancelButtonText?: string = 'Cancel';
+
+    /**
+     * Use this to change the background color of the "Confirm" button.
+     *
+     * @default undefined
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    confirmButtonColor?: string;
+
+    /**
+     * Use this to change the background color of the "Deny" button.
+     *
+     * @default undefined
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    denyButtonColor?: string;
+
+    /**
+     * Use this to change the background color of the "Cancel" button.
+     *
+     * @default undefined
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    cancelButtonColor?: string;
+
+    /**
+     * Use this to change the `aria-label` for the "Confirm" button.
+     *
+     * @default ''
+     */
+    confirmButtonAriaLabel?: string = '';
+
+    /**
+     * Use this to change the `aria-label` for the "Deny" button.
+     *
+     * @default ''
+     */
+    denyButtonAriaLabel?: string = '';
+
+    /**
+     * Use this to change the `aria-label` for the "Cancel" button.
+     *
+     * @default ''
+     */
+    cancelButtonAriaLabel?: string = '';
+
+
+    /**
+     * Set to `true` if you want to invert default buttons positions.
+     *
+     * @default false
+     * @description ❌⚠️NOT Implemented!⚠️❌
+     */
+    reverseButtons?: boolean = false;
+
+
+
+    /**
+     * Set to `true` to show close button.
+     *
+     * @default false
+     */
+    showCloseButton?: boolean = false;
+
+
+    containerClass?: string = '';
+}
+```
+
+
+## Author
+💻Mohammadreza samani | FrontEnd Developer
+
+[❤️Buy me a coffee 😉](https://www.buymeacoffee.com/mrsamani)
+
+ 
