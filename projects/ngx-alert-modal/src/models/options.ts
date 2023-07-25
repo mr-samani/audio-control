@@ -91,7 +91,7 @@ export class AlertOptions {
      *
      * @default false
      */
-    showCancelButton?: boolean = true;
+    showCancelButton?: boolean = false;
 
     /**
      * Use this to change the text on the "Confirm" button.

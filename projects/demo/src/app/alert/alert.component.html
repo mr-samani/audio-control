@@ -1,9 +1,5 @@
-<p>Alert Demo</p>
-
-
-
-
-<mat-card>
+<mat-card class="container">
+    <mat-card-title>Alert Demo</mat-card-title>
     <mat-card-content>
         <div class="configuration">
 
@@ -69,10 +65,7 @@
         </div>
 
         <button (click)="openModal()" mat-raised-button color="primary" class="btn-demo">Show Alert</button>
+        <h5>Result:</h5>
+        <pre dir="ltr" style="text-align: left;">{{result|json}}</pre>
     </mat-card-content>
 </mat-card>
-
-
-
-<h5>Result:</h5>
-<pre dir="ltr" style="text-align: left;">{{result|json}}</pre>

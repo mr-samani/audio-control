@@ -8,6 +8,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    z-index: 9999;
 
     &.has-backdrop {
         background: #0000001e;
@@ -44,6 +45,8 @@
     .ngx-alert-body {
         padding: 15px;
         text-align: center;
+        max-height: calc(100vh - 120px);
+        overflow: auto;
     }
 
     .ngx-alert-title {
