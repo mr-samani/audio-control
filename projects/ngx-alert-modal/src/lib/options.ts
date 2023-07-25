@@ -1,17 +1,20 @@
+export type AlertIcon = 'success' | 'error' | 'warning' | 'info' | 'question'
+
+
 export class AlertOptions {
     /**
     * The title of the popup, as HTML.
     *
     * @default ''
     */
-    title?: string | HTMLElement;
+    title?: string | HTMLElement='';
 
     /**
      * A description for the popup.
      *
      * @default ''
      */
-    text?: string;
+    text?: string='';
 
     /**
      * A HTML description for the popup.
@@ -22,7 +25,7 @@ export class AlertOptions {
      *
      * @default ''
      */
-    html?: string | HTMLElement;
+    html?: string | HTMLElement='';
 
 
     /**
@@ -31,10 +34,10 @@ export class AlertOptions {
      *
      * @default true
      */
-    backdrop?: boolean | string
+    backdrop?: boolean =true;
 
 
-
+    icon?: AlertIcon;
 
     /**
      * Popup width, including paddings (`box-sizing: border-box`).
@@ -51,7 +54,7 @@ export class AlertOptions {
      *
      * @default true
      */
-    allowOutsideClick?: boolean;
+    allowOutsideClick?: boolean=true;
 
     /**
      * If set to `false`, the user can't dismiss the popup by pressing the Escape key.
@@ -60,7 +63,7 @@ export class AlertOptions {
      *
      * @default true
      */
-    allowEscapeKey?: boolean;
+    allowEscapeKey?: boolean=true;
 
     /**
      * If set to `false`, the user can't confirm the popup by pressing the Enter or Space keys,
@@ -69,7 +72,7 @@ export class AlertOptions {
      *
      * @default true
      */
-    allowEnterKey?: boolean;
+    allowEnterKey?: boolean=true;
 
 
     /**
@@ -78,42 +81,42 @@ export class AlertOptions {
      *
      * @default true
      */
-    showConfirmButton?: boolean;
+    showConfirmButton?: boolean=true;
 
     /**
      * If set to `true`, the "Deny" button will be shown, which the user can click on to deny the popup.
      *
      * @default false
      */
-    showDenyButton?: boolean;
+    showDenyButton?: boolean=false;
 
     /**
      * If set to `true`, the "Cancel" button will be shown, which the user can click on to dismiss the popup.
      *
      * @default false
      */
-    showCancelButton?: boolean;
+    showCancelButton?: boolean=true;
 
     /**
      * Use this to change the text on the "Confirm" button.
      *
      * @default 'OK'
      */
-    confirmButtonText?: string;
+    confirmButtonText?: string='Ok';
 
     /**
      * Use this to change the text on the "Confirm" button.
      *
      * @default 'No'
      */
-    denyButtonText?: string;
+    denyButtonText?: string='No';
 
     /**
      * Use this to change the text on the "Cancel" button.
      *
      * @default 'Cancel'
      */
-    cancelButtonText?: string;
+    cancelButtonText?: string='Cancel';
 
     /**
      * Use this to change the background color of the "Confirm" button.
@@ -141,21 +144,21 @@ export class AlertOptions {
      *
      * @default ''
      */
-    confirmButtonAriaLabel?: string;
+    confirmButtonAriaLabel?: string='';
 
     /**
      * Use this to change the `aria-label` for the "Deny" button.
      *
      * @default ''
      */
-    denyButtonAriaLabel?: string;
+    denyButtonAriaLabel?: string='';
 
     /**
      * Use this to change the `aria-label` for the "Cancel" button.
      *
      * @default ''
      */
-    cancelButtonAriaLabel?: string;
+    cancelButtonAriaLabel?: string='';
 
 
     /**
@@ -163,7 +166,7 @@ export class AlertOptions {
      *
      * @default false
      */
-    reverseButtons?: boolean;
+    reverseButtons?: boolean=false;
 
 
 
@@ -172,21 +175,8 @@ export class AlertOptions {
      *
      * @default false
      */
-    showCloseButton?: boolean;
+    showCloseButton?: boolean=false;
 
-    /**
-     * Use this to change the HTML content of the close button.
-     *
-     * @default '&times;'
-     */
-    closeButtonHtml?: string;
-
-    /**
-     * Use this to change the `aria-label` for the close button.
-     *
-     * @default 'Close this dialog'
-     */
-    closeButtonAriaLabel?: string;
 
     containerClass?: string = '';
 }

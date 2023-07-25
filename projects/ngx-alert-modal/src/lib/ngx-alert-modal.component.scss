@@ -16,7 +16,7 @@
         min-width: 400px;
         min-height: 150px;
         border-radius: 6px;
-        animation: ShowAlert ease-in 200ms;
+        animation: ShowAlert .3s;
     }
 
     .ngx-alert-header {
@@ -24,11 +24,6 @@
         align-items: center;
         font-size: 30px;
         min-height: 40px;
-        padding: 10px;
-
-        .ngx-alert-title {
-            flex: auto;
-        }
 
         .ngx-alert-close {
             background: none;
@@ -48,25 +43,63 @@
         text-align: center;
     }
 
+    .ngx-alert-title {
+        padding: 15px;
+        text-align: center;
+    }
+
     .ngx-alert-footer {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
+        padding: 15px;
+        gap: 6px;
+        justify-content: center;
 
-        button {}
+        button {
+            background: none;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+
+            &.btn-confirm {
+                background-color: #007bff;
+            }
+
+            &.btn-cancel {
+                background-color: #6e7881;
+            }
+
+            &.btn-deny {
+                background-color: #dc3741;
+            }
+        }
     }
 }
 
 
 
 @keyframes ShowAlert {
-    from {
-        transform: scale(0.3);
-        opacity: .5;
+    0% {
+        transform: scale(0.7);
+
     }
 
-    to {
-        transform: scale(1);
-        opacity: 1;
+    45% {
+
+        transform: scale(1.05);
     }
+
+    80% {
+        transform: scale(0.95);
+
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
 }

@@ -24,7 +24,10 @@ export class AlertComponent implements OnInit {
     this.alert.fire({
       title: '404',
       text: 'test',
-      confirmButtonText: 'ok'
+      icon: 'success',
+      showCancelButton: true,
+      showDenyButton: true,
+      showConfirmButton: true
     }).then(result => {
 
     });

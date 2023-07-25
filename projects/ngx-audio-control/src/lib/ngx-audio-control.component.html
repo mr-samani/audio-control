@@ -1,9 +1,10 @@
 <div class="audio-player">
+    loading={{loading}}
     <div class="controls">
         <div class="time-seeker">
             <span> {{currentTime}}</span>
             <input class="seek-slider" id="seekSlider" [value]="seekValue" type="range" [min]="0" [max]="100" value="0"
-                step="1" (input)="seekAudio($event)">
+                step=".1" (input)="seekAudio($event)">
             <span> {{totalTime}}</span>
         </div>
         <div class="buttons">
@@ -95,6 +96,5 @@
     this.isMuted = {{isMuted}};
     this.currentTime = {{currentTime}};
     this.totalTime = {{totalTime}};
-
-    Buffer=Length:{{player.buffered.length}}
+ 
 </pre>

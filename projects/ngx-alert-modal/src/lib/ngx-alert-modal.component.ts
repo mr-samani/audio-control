@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 @Component({
   selector: 'lib-ngx-alert-modal',
   templateUrl: 'ngx-alert-modal.component.html',
-  styleUrls: ['./ngx-alert-modal.component.scss']
+  styleUrls: ['./ngx-alert-modal.component.scss', './ngx-alert-icons.scss']
 })
 export class NgxAlertModalComponent {
   options!: AlertOptions;
@@ -22,4 +22,7 @@ export class NgxAlertModalComponent {
   close() {
     this._onClose.next(this.index);
   }
+
+
+
 }

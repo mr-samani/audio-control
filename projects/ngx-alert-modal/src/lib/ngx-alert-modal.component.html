@@ -1,9 +1,6 @@
 <div class="ngx-alert-container">
     <div class="ngx-alert-inner">
         <div class="ngx-alert-header">
-            <div class="ngx-alert-title">
-                {{options.title}}
-            </div>
             <button class="ngx-alert-close" (click)="close()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                     <path
@@ -11,17 +8,60 @@
                 </svg>
             </button>
         </div>
+
+        <!-- --------- icon -------- -->
+        <ng-container [ngSwitch]="options.icon">
+
+
+            <div *ngSwitchCase="'success'" class="alert-icon alert-success alert-icon-show" style="display: flex;">
+                <div class="alert-success-circular-line-left"></div>
+                <span class="alert-success-line-tip"></span> <span class="alert-success-line-long"></span>
+                <div class="alert-success-ring"></div>
+                <div class="alert-success-fix"></div>
+                <div class="alert-success-circular-line-right"></div>
+            </div>
+
+
+            <div *ngSwitchCase="'error'" class="alert-icon alert-error alert-icon-show" style="display: flex;">
+                <span class="alert-x-mark">
+                    <span class="alert-x-mark-line-left"></span>
+                    <span class="alert-x-mark-line-right"></span>
+                </span>
+            </div>
+
+
+            <div *ngSwitchCase="'info'" class="alert-icon alert-info alert-icon-show" style="display: flex;">
+                <div class="alert-icon-content">i</div>
+            </div>
+
+
+            <div *ngSwitchCase="'question'" class="alert-icon alert-question alert-icon-show" style="display: flex;">
+                <div class="alert-icon-content">?</div>
+            </div>
+
+
+            <div *ngSwitchCase="'warning'" class="alert-icon alert-warning alert-icon-show" style="display: flex;">
+                <div class="alert-icon-content">!</div>
+            </div>
+
+
+        </ng-container>
+        <!-- --------- /icon -------- -->
+
+        <div class="ngx-alert-title">
+            {{options.title}}
+        </div>
         <div class="ngx-alert-body">
             {{options.text}}
         </div>
         <div class="ngx-alert-footer">
-            <button *ngIf="options.showConfirmButton" (click)="onConfirm()">
+            <button *ngIf="options.showConfirmButton" class="btn-confirm" (click)="onConfirm()">
                 {{options.confirmButtonText}}
             </button>
-            <button *ngIf="options.showCancelButton" (click)="onConfirm()">
+            <button *ngIf="options.showCancelButton" class="btn-cancel" (click)="onConfirm()">
                 {{options.cancelButtonText}}
             </button>
-            <button *ngIf="options.showDenyButton" (click)="onConfirm()">
+            <button *ngIf="options.showDenyButton" class="btn-deny" (click)="onConfirm()">
                 {{options.denyButtonText}}
             </button>
         </div>

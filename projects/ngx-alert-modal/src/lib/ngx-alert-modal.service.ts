@@ -1,4 +1,6 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector,
+} from '@angular/core';
 import { AlertOptions } from './options';
 import { NgxAlertModalComponent } from './ngx-alert-modal.component';
 

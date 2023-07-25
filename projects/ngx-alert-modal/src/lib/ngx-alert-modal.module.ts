@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { NgxAlertModalComponent } from './ngx-alert-modal.component';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -8,6 +9,7 @@ import { NgxAlertModalComponent } from './ngx-alert-modal.component';
     NgxAlertModalComponent,
   ],
   imports: [
+    CommonModule
   ],
   exports: [
     NgxAlertModalComponent,
