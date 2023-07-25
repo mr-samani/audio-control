@@ -1,5 +1,5 @@
-<div class="ngx-alert-container">
-    <div class="ngx-alert-inner">
+<div class="ngx-alert-container" (click)="onOutSideClick()">
+    <div class="ngx-alert-inner" (click)="innerOnClick($event)">
         <div class="ngx-alert-header">
             <button class="ngx-alert-close" (click)="close()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -53,6 +53,7 @@
         </div>
         <div class="ngx-alert-body">
             {{options.text}}
+            <span [innerHTML]="options.html"></span>
         </div>
         <div class="ngx-alert-footer">
             <button *ngIf="options.showConfirmButton" class="btn-confirm" (click)="onConfirm()">

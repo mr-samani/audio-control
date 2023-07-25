@@ -52,18 +52,17 @@ export class NgxAlertModalComponent {
     );
   }
   close() {
-    this._onClose.next({
-      index: this.index,
-      result: {
-        isConfirmed: false,
-        isDismissed: true,
-        isDenied: false,
-        dismiss: DismissReason.cancel,
-      }
-    }
-    );
+    this.onCancel();
   }
 
 
-
+  onOutSideClick() {
+    if (this.options.allowOutsideClick) {
+      this.onCancel();
+    }
+  }
+  innerOnClick(ev: Event) {
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
 }
