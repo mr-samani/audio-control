@@ -1,5 +1,4 @@
 .ngx-alert-container {
-    background: #00000014;
     position: fixed;
     top: 0;
     right: 0;
@@ -9,6 +8,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    &.has-backdrop {
+        background: #0000001e;
+    }
 
     .ngx-alert-inner {
         background-color: white;
