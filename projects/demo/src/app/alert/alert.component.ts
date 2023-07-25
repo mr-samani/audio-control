@@ -16,6 +16,7 @@ export class AlertComponent implements OnInit {
   ) {
     this.options.title = 'Message Title';
     this.options.text = "Message Body";
+    this.options.icon = 'success';
   }
 
 
@@ -28,7 +29,7 @@ export class AlertComponent implements OnInit {
   openModal() {
     this.alert.show(this.options)
       .then(result => {
-        result = result;
+        this.result = result;
       });
   }
 }

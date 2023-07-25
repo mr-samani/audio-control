@@ -58,7 +58,6 @@ export class AlertOptions {
      * If set to `false`, the user can't dismiss the popup by pressing the Escape key.
      *
      * @default true
-     * @description ❌⚠️NOT Implemented!⚠️❌
      */
     allowEscapeKey?: boolean = true;
 
@@ -67,7 +66,6 @@ export class AlertOptions {
      * unless they manually focus the confirm button.
      *
      * @default true
-     * @description ❌⚠️NOT Implemented!⚠️❌
      */
     allowEnterKey?: boolean = true;
 

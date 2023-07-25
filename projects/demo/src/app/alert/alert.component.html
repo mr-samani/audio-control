@@ -30,19 +30,32 @@
         </div>
 
 
+        <div>
+            <mat-checkbox [(ngModel)]="options.showCloseButton" name="showCloseButton">
+                Show Close Button
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="options.allowOutsideClick" name="allowOutsideClick">
+                Allow Outside Click
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="options.allowEnterKey" name="allowEnterKey">
+                Allow Enter Key
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="options.allowEscapeKey" name="allowEscapeKey">
+                Allow Escape Key
+            </mat-checkbox>
+        </div>
+        <!-- -------------------------- -->
+
         <div class="configuration">
-            <p>Confirm</p>
             <mat-checkbox [(ngModel)]="options.showConfirmButton" name="showConfirmButton">
                 Show confirm button
             </mat-checkbox>
-
             <mat-form-field appearance="outline">
                 <mat-label>Text</mat-label>
                 <input matInput type="text" [(ngModel)]="options.confirmButtonText" name="confirmButtonText" />
             </mat-form-field>
         </div>
         <div class="configuration">
-            <p>Cancel</p>
             <mat-checkbox [(ngModel)]="options.showCancelButton">
                 Show Cancel button
             </mat-checkbox>
@@ -53,7 +66,6 @@
             </mat-form-field>
         </div>
         <div class="configuration">
-            <p>Deny</p>
             <mat-checkbox [(ngModel)]="options.showDenyButton">
                 Show Deny button
             </mat-checkbox>

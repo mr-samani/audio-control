@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { AlertOptions } from '../models/options';
 import { Observable, Subject } from 'rxjs';
 import { AlertResult, DismissReason } from '../models/alert-result';
@@ -14,6 +14,31 @@ export class NgxAlertModalComponent {
 
   private readonly _onClose = new Subject<{ index: number, result: AlertResult<any> }>();
   public onClose = this._onClose.asObservable();
+
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onScapeKey(event: KeyboardEvent) {
+    if (this.options.allowEscapeKey) {
+      this.onCancel();
+    }
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  onEnterKey(event: KeyboardEvent) {
+    event.stopPropagation();
+    event.preventDefault();
+    if (this.options.allowEnterKey) {
+      if (this.options.showConfirmButton) {
+        this.onConfirm();
+      } else if (this.options.showDenyButton) {
+        this.onDeny();
+      } else {
+        this.onCancel()
+      }
+    }
+  }
+
+
 
   onConfirm() {
     this._onClose.next({
