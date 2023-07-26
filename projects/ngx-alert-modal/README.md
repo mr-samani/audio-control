@@ -6,7 +6,7 @@ Simple popup modal
 like sweetalert2 and fix bug show in legacy browser 
 
 ## 📦Demo
-Preview [Demo](https://github.com/angular/angular-cli)
+Preview [Demo](https://mr-samani.github.io/pkgs/alert)
 
 
 ## 🗃️ Install
