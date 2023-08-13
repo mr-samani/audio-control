@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
-import { GridLayoutComponent } from './grid-layout.component';
+import { GridLayoutComponent } from './grid/grid-layout.component';
+import { GridItemComponent } from '../public-api';
 
 
 
 @NgModule({
   declarations: [
-    GridLayoutComponent
+    GridLayoutComponent,
+    GridItemComponent,
   ],
   imports: [
   ],
   exports: [
-    GridLayoutComponent
+    GridLayoutComponent,
+    GridItemComponent
   ]
 })
 export class GridLayoutModule { }
