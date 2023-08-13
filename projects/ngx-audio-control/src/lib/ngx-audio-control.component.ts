@@ -114,7 +114,7 @@ export class NgxAudioControlComponent {
     this._source.loop = false;
     // this._source.onended = this.onEnded()
     this._source.connect(this.gainNode);
-    this.gainNode.connect(this._audioContext.destination); 
+    this.gainNode.connect(this._audioContext.destination);
     this._source.start(0, offset);
     this.isPaused = false;
   }
@@ -139,7 +139,7 @@ export class NgxAudioControlComponent {
 
   updateSeekSlider() {
     if (!this.isPaused && this._buffer) {
-      this.seekValue = (this._audioContext.currentTime / this._buffer.duration) * 100;
+      //this.seekValue = (this._audioContext.currentTime / this._buffer.duration) * 100;
       this.currentTime = formatTime(this._audioContext.currentTime);
       this.changeDetector.detectChanges();
     }
@@ -148,6 +148,7 @@ export class NgxAudioControlComponent {
 
 
   seekAudio(ev: Event) {
+    debugger
     if (this._source && this._buffer) {
       var seekTime = this._buffer.duration * ((ev.target as any).value / 100);
       if (!this.isPaused)
