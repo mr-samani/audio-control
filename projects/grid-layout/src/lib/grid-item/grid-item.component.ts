@@ -4,6 +4,8 @@ import {
 } from '@angular/core';
 import { NgxDragableResizableDirective } from '../directives/ngx-dragable-resizable.directive';
 import { DOCUMENT } from '@angular/common';
+import { Position } from '../directives/position';
+import { GridLayoutService } from '../grid-layout.service';
 
 @Component({
   selector: 'grid-item',
@@ -19,7 +21,11 @@ import { DOCUMENT } from '@angular/common';
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [NgxDragableResizableDirective]
+  hostDirectives: [{
+    directive: NgxDragableResizableDirective,
+    // outputs: ['onDragEnd']
+  }],
+
 })
 export class GridItemComponent implements AfterContentInit {
   w!: number;
@@ -28,14 +34,22 @@ export class GridItemComponent implements AfterContentInit {
   y!: number;
   width!: number;
   height!: number;
+
   @Input() id: string = 'grid-item';
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private elementRef: ElementRef<HTMLElement>,
     private _changeDetect: ChangeDetectorRef,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private dragResizeDirective: NgxDragableResizableDirective,
+    private gridService: GridLayoutService
   ) {
-
+    dragResizeDirective.onDragEnd.subscribe(val => {
+      this.onMoveResizeEnd(val);
+    });
+    dragResizeDirective.onResizeEnd.subscribe(val => {
+      this.onMoveResizeEnd(val);
+    });
   }
 
   ngAfterContentInit(): void {
@@ -49,5 +63,9 @@ export class GridItemComponent implements AfterContentInit {
     this._changeDetect.detectChanges();
 
   }
-
+  onMoveResizeEnd(event: Position) {
+    const yOffset = event.point.y % (this.gridService.rowHeight + this.gridService.config.gap);
+    const xOffset = event.point.x % (this.gridService.colWidth + this.gridService.config.gap + this.gridService.config.background.borderWidth);
+    this.elementRef.nativeElement.style.transform = `translate(${event.translateX - xOffset}px,${event.tranlateY - yOffset}px)`;
+  }
 }

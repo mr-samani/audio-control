@@ -488,7 +488,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   public setElPosition() {
     this.el.style.transform = `translate(${this.x}px,${this.y}px)`;
     //this.el.style.removeProperty('position');
-    this.el.style.position = 'absolute';
+    //this.el.style.position = 'absolute';
     this.el.style.width = this.width + 'px';
     this.el.style.height = this.height + 'px';
   }

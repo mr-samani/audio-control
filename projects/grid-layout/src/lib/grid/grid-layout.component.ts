@@ -3,6 +3,7 @@ import { GridItemComponent } from '../grid-item/grid-item.component';
 import { Configuration, IConfiguration } from '../models/confirguration';
 import { Layout } from '../models/layout';
 import { mergeConfig } from '../utils/merge-config';
+import { GridLayoutService } from '../grid-layout.service';
 
 @Component({
   selector: 'grid',
@@ -11,18 +12,20 @@ import { mergeConfig } from '../utils/merge-config';
   encapsulation: ViewEncapsulation.None,
 })
 export class GridLayoutComponent implements OnInit, AfterContentInit {
-  @Input('rowHieght') _rowHeight = 50;
-  _config = new Configuration();
-  @Input('config') set config(val: IConfiguration) {
-    this._config = mergeConfig(this._config, val);
+  @Input('rowHieght') set _rowHeight(val: number) {
+    if (typeof (val) == 'number')
+      this.gridService.rowHeight = val;
+  }
+  @Input('config') set _config(val: IConfiguration) {
+    this.gridService.config = mergeConfig(this.gridService.config, val);
   }
   @Input() layout: Layout[] = [];
   @ContentChildren(GridItemComponent, { descendants: true }) _gridItem?: QueryList<GridItemComponent>;
 
-  private _colWidth = 0;
   private el: HTMLElement;
   constructor(
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>,
+    private gridService: GridLayoutService
   ) {
     this.el = elementRef.nativeElement;
   }
@@ -35,11 +38,10 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
 
   ngAfterContentInit(): void {
-    this._colWidth = (this.el.offsetWidth - ((this._config.cols - 1) * this._config.gap) - (this._config.cols * this._config.background.borderWidth)) / this._config.cols;
-    console.log('colWidth', this._colWidth, 'colHeight', this._rowHeight);
+    this.gridService.colWidth = (this.el.offsetWidth - ((this.gridService.config.cols - 1) * this.gridService.config.gap) - (this.gridService.config.cols * this.gridService.config.background.borderWidth)) / this.gridService.config.cols;
+    console.log('rowHeight', this.gridService.rowHeight, 'colWidth', this.gridService.colWidth);
     this.render();
-
-    this.setBackgroundCssVariables(this._rowHeight);
+    this.setBackgroundCssVariables();
   }
 
 
@@ -49,8 +51,8 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
       if (this._gridItem && this._gridItem.toArray()[i]) {
         const findedItem = this._gridItem.find(x => x.id == this.layout[i].id);
         if (findedItem) {
-          findedItem.width = this._colWidth * this.layout[i].width + this._config.gap * (this.layout[i].width - 1) + this._config.background.borderWidth * this.layout[i].width ;
-          findedItem.height = this._rowHeight * this.layout[i].height + this._config.gap * (this.layout[i].height - 1);// + this._config.background.borderWidth * this.layout[i].height * 2;
+          findedItem.width = this.gridService.colWidth * this.layout[i].width + this.gridService.config.gap * (this.layout[i].width - 1) + this.gridService.config.background.borderWidth * this.layout[i].width;
+          findedItem.height = this.gridService.rowHeight * this.layout[i].height + this.gridService.config.gap * (this.layout[i].height - 1);// + this.gridService.config.background.borderWidth * this.layout[i].height * 2;
           findedItem.w = this.layout[i].width;
           findedItem.h = this.layout[i].height;
           findedItem.render();
@@ -62,20 +64,20 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
 
 
-  private setBackgroundCssVariables(rowHeight: number) {
+  private setBackgroundCssVariables() {
     const style = (this.elementRef.nativeElement as HTMLDivElement).style;
-    if (this._config.background) {
+    if (this.gridService.config.background) {
       // structure
-      style.setProperty('--gap', this._config.gap + 'px');
-      style.setProperty('--row-height', rowHeight + 'px');
-      style.setProperty('--columns', `${this._config.cols}`);
-      style.setProperty('--border-width', (this._config.background.borderWidth) + 'px');
+      style.setProperty('--gap', this.gridService.config.gap + 'px');
+      style.setProperty('--row-height', this.gridService.rowHeight + 'px');
+      style.setProperty('--columns', `${this.gridService.config.cols}`);
+      style.setProperty('--border-width', (this.gridService.config.background.borderWidth) + 'px');
 
       // colors
-      style.setProperty('--border-color', this._config.background.borderColor);
-      style.setProperty('--gap-color', this._config.background.gapColor);
-      style.setProperty('--row-color', this._config.background.rowColor);
-      style.setProperty('--column-color', this._config.background.columnColor);
+      style.setProperty('--border-color', this.gridService.config.background.borderColor);
+      style.setProperty('--gap-color', this.gridService.config.background.gapColor);
+      style.setProperty('--row-color', this.gridService.config.background.rowColor);
+      style.setProperty('--column-color', this.gridService.config.background.columnColor);
     } else {
       style.removeProperty('--gap');
       style.removeProperty('--row-height');
