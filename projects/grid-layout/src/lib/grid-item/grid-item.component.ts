@@ -54,6 +54,7 @@ export class GridItemComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     // this.render();
+    this.dragResizeDirective.bounding =  this.gridService.gridLayout.el;
   }
 
   render() {
@@ -64,8 +65,17 @@ export class GridItemComponent implements AfterContentInit {
 
   }
   onMoveResizeEnd(event: Position) {
-    const yOffset = event.point.y % (this.gridService.rowHeight + this.gridService.config.gap);
-    const xOffset = event.point.x % (this.gridService.colWidth + this.gridService.config.gap + this.gridService.config.background.borderWidth);
-    this.elementRef.nativeElement.style.transform = `translate(${event.translateX - xOffset}px,${event.tranlateY - yOffset}px)`;
+    const h = this.gridService.rowHeight + this.gridService.config.gap;
+    const w = this.gridService.colWidth + this.gridService.config.gap + this.gridService.config.background.borderWidth
+    const yOffset = event.point.y % h;
+    const xOffset = event.point.x % w;
+    console.log('offSetX', xOffset, 'offSetY', yOffset);
+
+    const newX = event.translateX - xOffset; // (w / 2 < xOffset) ? event.translateX + xOffset : event.translateX - xOffset;
+    const newY = event.translateY - yOffset;// (h / 2 < yOffset) ? event.translateY + yOffset : event.translateY - yOffset;
+    this.dragResizeDirective.x = newX;
+    this.dragResizeDirective.y = newY;
+
+    this.elementRef.nativeElement.style.transform = `translate(${newX}px,${newY}px)`;
   }
 }

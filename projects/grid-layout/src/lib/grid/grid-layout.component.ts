@@ -10,6 +10,7 @@ import { GridLayoutService } from '../grid-layout.service';
   templateUrl: './grid-layout.component.html',
   styleUrls: ['./grid-layout.component.scss'],
   encapsulation: ViewEncapsulation.None,
+
 })
 export class GridLayoutComponent implements OnInit, AfterContentInit {
   @Input('rowHieght') set _rowHeight(val: number) {
@@ -22,12 +23,13 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
   @Input() layout: Layout[] = [];
   @ContentChildren(GridItemComponent, { descendants: true }) _gridItem?: QueryList<GridItemComponent>;
 
-  private el: HTMLElement;
+  el: HTMLElement;
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private gridService: GridLayoutService
   ) {
     this.el = elementRef.nativeElement;
+    gridService.gridLayout = this;
   }
 
 

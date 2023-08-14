@@ -1,5 +1,5 @@
 export interface Position {
-    tranlateY: number;
+    translateY: number;
     translateX: number;
     top: number;
     left: number;

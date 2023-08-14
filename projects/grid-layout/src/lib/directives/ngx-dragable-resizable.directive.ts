@@ -13,7 +13,7 @@ import { Position } from './position';
   standalone: true
 })
 export class NgxDragableResizableDirective implements AfterViewInit {
-  @Input() bounding = '';
+  @Input() bounding: HTMLElement | null = null;
   @Input() minWidth = 20;
   @Input() minHeight = 20;
   @Input() resize = true;
@@ -27,8 +27,8 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   protected height!: number;
   protected px: number;
   protected py: number;
-  protected x: number = 0;
-  protected y: number = 0;
+  x: number = 0;
+  y: number = 0;
   protected left!: number;
   protected top!: number;
   protected draggingCorner: boolean;
@@ -114,14 +114,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
 
     if (this.resize) {
       this.addCornerDiv();
-    }
-    if (this.bounding) {
-      const elBound = document.querySelector(this.bounding);
-      if (!elBound) {
-        console.warn('ngxDragableResizabale', 'Can not find bounding element!');
-        this.bounding = '';
-      }
-    }
+    } 
     if (this.el.getAnimations().length === 0) {
       this.initSize();
     } else {
@@ -324,12 +317,8 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   private checkBoundY(offsetY: number, checkTop = true, checkHeight = true) {
     if (!this.bounding) {
       return true;
-    }
-    const boundingEl = document.querySelector(this.bounding);
-    if (!boundingEl) {
-      return true;
-    }
-    const boundleRec = boundingEl.getBoundingClientRect();
+    } 
+    const boundleRec = this.bounding.getBoundingClientRect();
     const selfRec = this.el.getBoundingClientRect();
     const newY = selfRec.y + offsetY;
     if (newY < boundleRec.y && checkTop) {
@@ -349,11 +338,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
     if (!this.bounding) {
       return true;
     }
-    const boundingEl = document.querySelector(this.bounding);
-    if (!this.bounding || !boundingEl) {
-      return true;
-    }
-    const boundleRec = boundingEl.getBoundingClientRect();
+    const boundleRec = this.bounding.getBoundingClientRect();
     const selfRec = this.el.getBoundingClientRect();
     const newX = selfRec.x + offsetX;
     if (newX < boundleRec.x && checkLeft) {
@@ -494,7 +479,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   }
   public getPosition() {
     return {
-      tranlateY: this.y,
+      translateY: this.y,
       translateX: this.x,
       top: this.top,
       left: this.left,
