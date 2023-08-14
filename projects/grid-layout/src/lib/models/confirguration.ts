@@ -1,12 +1,26 @@
-export class Configuration {
+export interface IConfiguration {
+    background?: IBackgroundConfig;
+    gap?: number;
+    cols?: number;
+}
+export interface IBackgroundConfig {
+    show?: 'always' | 'whenDragging' | 'none';
+    borderColor?: string;
+    borderWidth?: number;
+    columnColor?: string;
+    gapColor?: string;
+    rowColor?: string;
+}
 
-    background?= new BackgroundConfig();
-    gap?= 5;
+//-------------------------------------
+export class Configuration implements IConfiguration {
+    background = new BackgroundConfig();
+    gap = 5;
     cols = 12;
 }
 
 
-export class BackgroundConfig {
+export class BackgroundConfig implements IBackgroundConfig {
     show: 'always' | 'whenDragging' | 'none' = 'always';
     borderColor: string = '#00b2ff3d';
     borderWidth: number = 1;

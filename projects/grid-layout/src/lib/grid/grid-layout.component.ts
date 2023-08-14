@@ -1,7 +1,8 @@
 import { AfterContentInit, Component, ContentChildren, ElementRef, Input, OnInit, QueryList, ViewEncapsulation } from '@angular/core';
 import { GridItemComponent } from '../grid-item/grid-item.component';
-import { Configuration } from '../models/confirguration';
+import { Configuration, IConfiguration } from '../models/confirguration';
 import { Layout } from '../models/layout';
+import { mergeConfig } from '../utils/merge-config';
 
 @Component({
   selector: 'grid',
@@ -12,8 +13,8 @@ import { Layout } from '../models/layout';
 export class GridLayoutComponent implements OnInit, AfterContentInit {
   @Input('rowHieght') _rowHeight = 50;
   _config = new Configuration();
-  @Input('config') set config(val: Configuration) {
-    this._config = { ...this._config, ...val };
+  @Input('config') set config(val: IConfiguration) {
+    this._config = mergeConfig(this._config, val);
   }
   @Input() layout: Layout[] = [];
   @ContentChildren(GridItemComponent, { descendants: true }) _gridItem?: QueryList<GridItemComponent>;
@@ -34,7 +35,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
 
   ngAfterContentInit(): void {
-    this._colWidth = (this.el.offsetWidth - ((this._config.cols - 1) * (this._config.gap ?? 0))) / this._config.cols;
+    this._colWidth = (this.el.offsetWidth - ((this._config.cols - 1) * this._config.gap) - (this._config.cols * this._config.background.borderWidth)) / this._config.cols;
     console.log('colWidth', this._colWidth, 'colHeight', this._rowHeight);
     this.render();
 
@@ -48,8 +49,8 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
       if (this._gridItem && this._gridItem.toArray()[i]) {
         const findedItem = this._gridItem.find(x => x.id == this.layout[i].id);
         if (findedItem) {
-          findedItem.width = this._colWidth * this.layout[i].width + (this._config.gap ?? 0) * (this.layout[i].width - 1) + (this._config.background?.borderWidth ?? 0 * this.layout[i].width);
-          findedItem.height = this._rowHeight * this.layout[i].height + (this._config.gap ?? 0) * (this.layout[i].height - 1)+ (this._config.background?.borderWidth ?? 0 * this.layout[i].height);
+          findedItem.width = this._colWidth * this.layout[i].width + this._config.gap * (this.layout[i].width - 1) + this._config.background.borderWidth * this.layout[i].width ;
+          findedItem.height = this._rowHeight * this.layout[i].height + this._config.gap * (this.layout[i].height - 1);// + this._config.background.borderWidth * this.layout[i].height * 2;
           findedItem.w = this.layout[i].width;
           findedItem.h = this.layout[i].height;
           findedItem.render();

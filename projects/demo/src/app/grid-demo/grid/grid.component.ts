@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Configuration } from 'projects/grid-layout/src/lib/models/confirguration';
+import { Configuration, IConfiguration } from 'projects/grid-layout/src/lib/models/confirguration';
 import { Layout } from 'projects/grid-layout/src/lib/models/layout';
 
 @Component({
@@ -13,8 +13,11 @@ export class GridComponent {
     { id: 'i2', width: 3, height: 9, x: 0, y: 0 },
     { id: 'i3', width: 1, height: 1, x: 0, y: 0 },
   ];
-  config: Configuration = {
-    cols: 20,
-    gap: 20
+  config: IConfiguration = {
+    cols:12,
+    gap: 20,
+    background: {
+      borderWidth: 5
+    }
   };
 }
