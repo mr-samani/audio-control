@@ -8,7 +8,8 @@ grid {
         border: none;
         position: absolute;
         inset: 0;
-        z-index: 0;
+        z-index: -1;
+        opacity: .5;
         transition: opacity .2s;
         background-image: repeating-linear-gradient(var(--border-color) 0 var(--border-width), var(--row-color) var(--border-width) calc(var(--row-height) - var(--border-width)), var(--border-color) calc(var(--row-height) - var(--border-width)) calc(var(--row-height)), var(--gap-color) calc(var(--row-height)) calc(var(--row-height) + var(--gap))), repeating-linear-gradient(90deg, var(--border-color) 0 var(--border-width), var(--column-color) var(--border-width) calc(100% - (var(--border-width) + var(--gap))), var(--border-color) calc(100% - (var(--border-width) + var(--gap))) calc(100% - var(--gap)), var(--gap-color) calc(100% - var(--gap)) 100%);
         background-size: calc((100% + var(--gap)) / var(--columns)) calc(var(--row-height) + var(--gap));

@@ -1,6 +1,7 @@
 export class Configuration {
-    background = new BackgroundConfig();
-    gap = 5;
+
+    background?= new BackgroundConfig();
+    gap?= 5;
     cols = 12;
 }
 
