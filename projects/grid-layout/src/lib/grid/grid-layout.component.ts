@@ -40,7 +40,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
 
   ngAfterContentInit(): void {
-    this.gridService.colWidth = (this.el.offsetWidth - ((this.gridService.config.cols - 1) * this.gridService.config.gap) - (this.gridService.config.cols * this.gridService.config.background.borderWidth)) / this.gridService.config.cols;
+    this.gridService.colWidth = (this.el.offsetWidth - ((this.gridService.config.cols - 1) * this.gridService.config.gap)) / this.gridService.config.cols;
     console.log('rowHeight', this.gridService.rowHeight, 'colWidth', this.gridService.colWidth);
     this.render();
     this.setBackgroundCssVariables();
@@ -53,10 +53,10 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
       if (this._gridItem && this._gridItem.toArray()[i]) {
         const findedItem = this._gridItem.find(x => x.id == this.layout[i].id);
         if (findedItem) {
-          findedItem.width = this.gridService.colWidth * this.layout[i].width + this.gridService.config.gap * (this.layout[i].width - 1) + this.gridService.config.background.borderWidth * this.layout[i].width;
-          findedItem.height = this.gridService.rowHeight * this.layout[i].height + this.gridService.config.gap * (this.layout[i].height - 1);// + this.gridService.config.background.borderWidth * this.layout[i].height * 2;
-          findedItem.w = this.layout[i].width;
-          findedItem.h = this.layout[i].height;
+          findedItem.width = this.gridService.colWidth * this.layout[i].width + this.gridService.config.gap * (this.layout[i].width - 1);
+          findedItem.height = this.gridService.rowHeight * this.layout[i].height + this.gridService.config.gap * (this.layout[i].height - 1);
+          findedItem.widthCell = this.layout[i].width;
+          findedItem.heightCell = this.layout[i].height;
           findedItem.render();
         }
       }

@@ -114,7 +114,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
 
     if (this.resize) {
       this.addCornerDiv();
-    } 
+    }
     if (this.el.getAnimations().length === 0) {
       this.initSize();
     } else {
@@ -317,7 +317,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   private checkBoundY(offsetY: number, checkTop = true, checkHeight = true) {
     if (!this.bounding) {
       return true;
-    } 
+    }
     const boundleRec = this.bounding.getBoundingClientRect();
     const selfRec = this.el.getBoundingClientRect();
     const newY = selfRec.y + offsetY;

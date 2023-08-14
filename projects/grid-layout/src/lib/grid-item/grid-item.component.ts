@@ -28,8 +28,8 @@ import { GridLayoutService } from '../grid-layout.service';
 
 })
 export class GridItemComponent implements AfterContentInit {
-  w!: number;
-  h!: number;
+  widthCell!: number;
+  heightCell!: number;
   x!: number;
   y!: number;
   width!: number;
@@ -54,7 +54,7 @@ export class GridItemComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     // this.render();
-    this.dragResizeDirective.bounding =  this.gridService.gridLayout.el;
+    this.dragResizeDirective.bounding = this.gridService.gridLayout.el;
   }
 
   render() {
@@ -65,17 +65,27 @@ export class GridItemComponent implements AfterContentInit {
 
   }
   onMoveResizeEnd(event: Position) {
+
     const h = this.gridService.rowHeight + this.gridService.config.gap;
-    const w = this.gridService.colWidth + this.gridService.config.gap + this.gridService.config.background.borderWidth
+    const w = this.gridService.colWidth + this.gridService.config.gap;
     const yOffset = event.point.y % h;
     const xOffset = event.point.x % w;
-    console.log('offSetX', xOffset, 'offSetY', yOffset);
+    //  console.log('offSetX', xOffset, 'offSetY', yOffset);
 
-    const newX = event.translateX - xOffset; // (w / 2 < xOffset) ? event.translateX + xOffset : event.translateX - xOffset;
-    const newY = event.translateY - yOffset;// (h / 2 < yOffset) ? event.translateY + yOffset : event.translateY - yOffset;
+    const newX = (this.gridService.colWidth / 2 < xOffset) ? event.translateX + (w - xOffset) : event.translateX - xOffset;
+    const newY = (this.gridService.rowHeight / 2 < yOffset) ? event.translateY + (h - yOffset) : event.translateY - yOffset;
     this.dragResizeDirective.x = newX;
     this.dragResizeDirective.y = newY;
-
+    event.point.x = newX;
+    event.point.y = newY;
     this.elementRef.nativeElement.style.transform = `translate(${newX}px,${newY}px)`;
+
+    // -------------------------
+    const rOffset = (event.point.x + event.width) % w;
+    const bOffset = (event.point.y + event.height) % h;
+    const newWidth = event.width + this.gridService.colWidth - rOffset; // this.gridService.colWidth / 2 < wOffset ? event.width - (w - wOffset) : event.width + wOffset;
+    const newHeight = event.height + this.gridService.rowHeight - bOffset; //this.gridService.rowHeight / 2 < hOffset ? event.height - (h - hOffset) : event.height + hOffset;
+    this.elementRef.nativeElement.style.width = `${newWidth}px`;
+    this.elementRef.nativeElement.style.height = `${newHeight}px`;
   }
 }
