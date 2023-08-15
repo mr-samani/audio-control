@@ -1,9 +1,10 @@
-import { AfterContentInit, Component, ContentChildren, ElementRef, Input, OnInit, QueryList, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, ElementRef, Input, OnInit, QueryList, Renderer2, ViewEncapsulation } from '@angular/core';
 import { GridItemComponent } from '../grid-item/grid-item.component';
 import { Configuration, IConfiguration } from '../models/confirguration';
 import { Layout } from '../models/layout';
 import { mergeConfig } from '../utils/merge-config';
 import { GridLayoutService } from '../grid-layout.service';
+import { Position } from '../directives/position';
 
 @Component({
   selector: 'grid',
@@ -28,10 +29,11 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
   @ContentChildren(GridItemComponent, { descendants: true }) _gridItem?: QueryList<GridItemComponent>;
 
   el: HTMLElement;
-
+  placeholder?: HTMLElement;
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    private gridService: GridLayoutService
+    private gridService: GridLayoutService,
+    private renderer: Renderer2
   ) {
     this.el = elementRef.nativeElement;
     gridService.gridLayout = this;
@@ -95,6 +97,53 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
       style.removeProperty('--column-color');
     }
   }
+
+
+
+  /** Creates placeholder element */
+  createPlaceholderElement(clientRect: Position) {
+    if (!this.placeholder)
+      this.placeholder = this.renderer.createElement('div');
+    this.placeholder!.style.width = `${clientRect.width}px`;
+    this.placeholder!.style.height = `${clientRect.height}px`;
+    this.placeholder!.style.left = `${clientRect.left}px`;
+    this.placeholder!.style.top = `${clientRect.top}px`;
+
+    const h = this.gridService.rowHeight + this.gridService.config.gap;
+    const w = this.gridService.colWidth + this.gridService.config.gap;
+    const yOffset = clientRect.point.y % h;
+    const xOffset = clientRect.point.x % w;
+    //  console.log('offSetX', xOffset, 'offSetY', yOffset);
+
+    const newX = (this.gridService.colWidth / 2 < xOffset) ? clientRect.translateX + (w - xOffset) : clientRect.translateX - xOffset;
+    const newY = (this.gridService.rowHeight / 2 < yOffset) ? clientRect.translateY + (h - yOffset) : clientRect.translateY - yOffset;
+
+    this.placeholder!.style.transform = `translateX(${newX}px) translateY(${newY}px)`;
+    this.placeholder!.classList.add('grid-item-placeholder');
+    this.renderer.appendChild(this.elementRef.nativeElement, this.placeholder);
+
+    // // Create and append custom placeholder if provided.
+    // // Important: Append it after creating & appending the container placeholder. This way we ensure parent bounds are set when creating the embeddedView.
+    // if (gridItemPlaceholder) {
+    //   this.placeholderRef = this.viewContainerRef.createEmbeddedView(
+    //     gridItemPlaceholder.templateRef,
+    //     gridItemPlaceholder.data
+    //   );
+    //   this.placeholderRef.rootNodes.forEach(node => this.placeholder!.appendChild(node));
+    //   this.placeholderRef.detectChanges();
+    // } else {
+    //   this.placeholder!.classList.add('ktd-grid-item-placeholder-default');
+    // }
+  }
+
+  /** Destroys the placeholder element and its ViewRef. */
+  destroyPlaceholder() {
+    this.placeholder?.remove();
+    //this.placeholderRef?.destroy();
+    //this.placeholder = this.placeholderRef = null!;
+  }
+
+
 
 
 }

@@ -34,8 +34,8 @@ import { Layout } from '../models/layout';
 export class GridItemComponent implements AfterViewInit, AfterContentInit {
   /** cell position */
   position = new Layout();
-  x!: number;
-  y!: number;
+  top!: number;
+  left!: number;
   width!: number;
   height!: number;
   index = 0;
@@ -54,6 +54,10 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     dragResizeDirective.onResizeEnd.subscribe(val => {
       this.onMoveResizeEnd(val);
     });
+    dragResizeDirective.onDrag.subscribe(val => {
+      this.onMoveResizeItem(val);
+    });
+  
   }
   ngAfterViewInit(): void {
     // if (this.elementRef.nativeElement.getAnimations().length === 0) {
@@ -80,7 +84,7 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     style.width = this.width + 'px';
     style.height = this.height + 'px';
 
-    
+
     this.position = this.gridService.getFreePosition(this.position);
     style.left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x) + 'px';
     // to do if rtl decrease left
@@ -90,7 +94,9 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
   }
 
 
-
+  onMoveResizeItem(event: Position) {
+    this.gridService.gridLayout.createPlaceholderElement(event);
+  }
 
 
 
@@ -111,8 +117,8 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     //---------------calc x,y---------------
     this.calcXY();
     // -------------resize------------
-    const rOffset = (this.x + event.width) % w;
-    const bOffset = (this.y + event.height) % h;
+    const rOffset = (this.left + event.width) % w;
+    const bOffset = (this.top + event.height) % h;
     let newWidth = event.width + this.gridService.colWidth - rOffset;
     let newHeight = event.height + this.gridService.rowHeight - bOffset;
     this.elementRef.nativeElement.style.width = `${newWidth}px`;
@@ -122,6 +128,7 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     //---------------calc cells--------------
     this.calcCell();
     this.gridService.calculateRenderData();
+    this.gridService.gridLayout.destroyPlaceholder();
   }
 
   calcXY() {
@@ -132,17 +139,28 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     var left = (window.scrollX || doc.scrollLeft) - (doc.clientLeft || 0);
     var top = (window.scrollY || doc.scrollTop) - (doc.clientTop || 0);
 
-    this.x = selfBounding.x - parentBounding.x;//+ left;
-    this.y = selfBounding.y - parentBounding.y;// + top;
+    this.left = selfBounding.x - parentBounding.x;//+ left;
+    this.top = selfBounding.y - parentBounding.y;// + top;
   }
 
 
   calcCell() {
     this.position.w = Math.round(this.width / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.h = Math.round(this.height / (this.gridService.rowHeight + this.gridService.config.gap));
-    this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
-    this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
+    this.position.x = Math.round(this.left / (this.gridService.colWidth + this.gridService.config.gap));
+    this.position.y = Math.round(this.top / (this.gridService.rowHeight + this.gridService.config.gap));
     // set position in main layout
     this.gridService.layout[this.index] = this.position;
   }
+
+
+
+
+
+
+
+
+
+
+
 }

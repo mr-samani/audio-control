@@ -16,3 +16,10 @@ grid {
         background-position: 0 0;
     }
 }
+
+.grid-item-placeholder {
+    position: absolute;
+    z-index: 0;
+    transition: transform 150ms ease;
+    background-color: rgba(224, 2, 2, 0.123);
+}
