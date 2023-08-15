@@ -67,10 +67,10 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     //   });
     // }
   }
+
   ngAfterContentInit(): void {
     // this.render();
     this.dragResizeDirective.bounding = this.gridService.gridLayout.el;
-
   }
 
   render() {
@@ -79,11 +79,20 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
+
+    
+    this.position = this.gridService.getFreePosition(this.position);
+    style.left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x) + 'px';
     // to do if rtl decrease left
     this.calcXY();
     this.calcCell();
     this._changeDetect.detectChanges();
   }
+
+
+
+
+
 
   onMoveResizeEnd(event: Position) {
 

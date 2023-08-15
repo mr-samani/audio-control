@@ -18,13 +18,29 @@ export class GridLayoutService {
 
 
   calculateRenderData() {
-   // setTimeout(() => {
-      this.gridHeight = this.gridLayout._gridItem ? getBottomGrid(this.layout, this.rowHeight, this.config.gap) : 0;
-      console.log(this.gridHeight);
-   // }, 100);
+    // setTimeout(() => {
+    this.gridHeight = this.gridLayout._gridItem ? getBottomGrid(this.layout, this.rowHeight, this.config.gap) : 0;
+    console.log(this.gridHeight);
+    // }, 100);
+  }
+
+  getFreePosition(position: Layout, i = 0) {
+    let l = this.layout[i];
+    if (l.id == position.id) {
+      return position;
+    }
+    if (position.x >= l.x && position.x < (l.x + l.w)) {
+      position.x = l.x + l.w ;
+      this.getFreePosition(position, ++i);
+    }
+    return position;
   }
 
 }
+
+/*------------------------------------------------------*/
+
+
 
 function getMaxGridItemHeight(layout: Layout[], rowHeight: number, gap: number): number {
   return layout.reduce((acc, cur) => Math.max(acc, (cur.y + cur.h) * rowHeight + Math.max(cur.y + cur.h - 1, 0) * gap), 0);
