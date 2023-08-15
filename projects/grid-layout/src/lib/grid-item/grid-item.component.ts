@@ -6,6 +6,7 @@ import { NgxDragableResizableDirective } from '../directives/ngx-dragable-resiza
 import { DOCUMENT } from '@angular/common';
 import { Position } from '../directives/position';
 import { GridLayoutService } from '../grid-layout.service';
+import { Layout } from '../models/layout';
 
 @Component({
   selector: 'grid-item',
@@ -32,12 +33,7 @@ import { GridLayoutService } from '../grid-layout.service';
 })
 export class GridItemComponent implements AfterViewInit, AfterContentInit {
   /** cell position */
-  position = {
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0
-  }
+  position = new Layout();
   x!: number;
   y!: number;
   width!: number;
@@ -78,6 +74,8 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
   }
 
   render() {
+    this.width = this.gridService.colWidth * this.position.w + this.gridService.config.gap * (this.position.w - 1);
+    this.height = this.gridService.rowHeight * this.position.h + this.gridService.config.gap * (this.position.h - 1);
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
@@ -136,9 +134,6 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
     // set position in main layout
-    this.gridService.layout[this.index].height = this.position.h;
-    this.gridService.layout[this.index].width = this.position.w;
-    this.gridService.layout[this.index].x = this.position.x;
-    this.gridService.layout[this.index].y = this.position.y;
+    this.gridService.layout[this.index] = this.position;
   }
 }

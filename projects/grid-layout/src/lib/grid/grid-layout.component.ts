@@ -59,12 +59,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
       if (this._gridItem && this._gridItem.toArray()[i]) {
         const findedItem = this._gridItem.find(x => x.id == this.gridService.layout[i].id);
         if (findedItem) {
-          findedItem.width = this.gridService.colWidth * this.gridService.layout[i].width + this.gridService.config.gap * (this.gridService.layout[i].width - 1);
-          findedItem.height = this.gridService.rowHeight * this.gridService.layout[i].height + this.gridService.config.gap * (this.gridService.layout[i].height - 1);
-          findedItem.position.w = this.gridService.layout[i].width;
-          findedItem.position.h = this.gridService.layout[i].height;
-          findedItem.position.x = this.gridService.layout[i].x;
-          findedItem.position.y = this.gridService.layout[i].y;
+          findedItem.position = this.gridService.layout[i];
           findedItem.index = i;
           findedItem.render();
         }

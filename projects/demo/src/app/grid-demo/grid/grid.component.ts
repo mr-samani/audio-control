@@ -10,9 +10,9 @@ import { Layout } from 'projects/grid-layout/src/lib/models/layout';
 export class GridComponent {
   rtl = false;
   layout: Layout[] = [
-    { id: 'i1', width: 2, height: 3, x: 0, y: 0 },
-    { id: 'i2', width: 3, height: 9, x: 0, y: 0 },
-    { id: 'i3', width: 1, height: 1, x: 0, y: 0 },
+    { id: 'i1', w: 2, h: 3, x: 0, y: 0 },
+    { id: 'i2', w: 3, h: 9, x: 0, y: 0 },
+    { id: 'i3', w: 1, h: 1, x: 0, y: 0 },
   ];
   config: IConfiguration = {
     cols: 12,
