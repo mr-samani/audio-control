@@ -81,10 +81,12 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
-
+    // to do if rtl decrease left
+    this.calcXY();
+    this.calcCell();
     this._changeDetect.detectChanges();
-
   }
+
   onMoveResizeEnd(event: Position) {
 
     const h = this.gridService.rowHeight + this.gridService.config.gap;
@@ -111,15 +113,7 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.height = newHeight;
     this.width = newWidth;
     //---------------calc cells--------------
-    this.position.w = Math.round(newWidth / (this.gridService.colWidth + this.gridService.config.gap));
-    this.position.h = Math.round(newHeight / (this.gridService.rowHeight + this.gridService.config.gap));
-    this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
-    this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
-    // set position in main layout
-    this.gridService.layout[this.index].height = this.position.h;
-    this.gridService.layout[this.index].width = this.position.w;
-    this.gridService.layout[this.index].x = this.position.x;
-    this.gridService.layout[this.index].y = this.position.y;
+    this.calcCell();
     this.gridService.calculateRenderData();
   }
 
@@ -133,5 +127,18 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
 
     this.x = selfBounding.x - parentBounding.x;//+ left;
     this.y = selfBounding.y - parentBounding.y;// + top;
+  }
+
+
+  calcCell() {
+    this.position.w = Math.round(this.width / (this.gridService.colWidth + this.gridService.config.gap));
+    this.position.h = Math.round(this.height / (this.gridService.rowHeight + this.gridService.config.gap));
+    this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
+    this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
+    // set position in main layout
+    this.gridService.layout[this.index].height = this.position.h;
+    this.gridService.layout[this.index].width = this.position.w;
+    this.gridService.layout[this.index].x = this.position.x;
+    this.gridService.layout[this.index].y = this.position.y;
   }
 }

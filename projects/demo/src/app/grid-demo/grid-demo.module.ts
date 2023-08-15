@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { GridComponent } from './grid/grid.component';
 import { GridDemoRoutingModule } from './grid-demo-routing.module';
 import { GridLayoutModule } from 'projects/grid-layout/src/public-api';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { GridLayoutModule } from 'projects/grid-layout/src/public-api';
   imports: [
     CommonModule,
     GridDemoRoutingModule,
-    GridLayoutModule
+    GridLayoutModule,
+    FormsModule
   ]
 })
 export class GridDemoModule { }

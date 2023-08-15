@@ -1,4 +1,8 @@
-<div class="container">
+
+<label><input type="checkbox" [(ngModel)]="rtl" [value]="true">
+    {{rtl}}
+</label>
+<div class="container" [dir]="rtl?'rtl':'ltr'">
     <grid [layout]="layout" [config]="config">
         <ng-container *ngFor="let item of layout">
             <grid-item [id]="item.id">{{item.id}}</grid-item>

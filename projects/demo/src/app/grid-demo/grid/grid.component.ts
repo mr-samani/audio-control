@@ -8,13 +8,14 @@ import { Layout } from 'projects/grid-layout/src/lib/models/layout';
   styleUrls: ['./grid.component.scss']
 })
 export class GridComponent {
+  rtl = false;
   layout: Layout[] = [
     { id: 'i1', width: 2, height: 3, x: 0, y: 0 },
     { id: 'i2', width: 3, height: 9, x: 0, y: 0 },
     { id: 'i3', width: 1, height: 1, x: 0, y: 0 },
   ];
   config: IConfiguration = {
-    cols:12,
+    cols: 12,
     gap: 20,
     background: {
       borderWidth: 5

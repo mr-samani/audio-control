@@ -304,9 +304,12 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
     const newY = selfRec.y + offsetY;
     if (newY < boundleRec.y && checkTop) {
       return false;
-    } else if ((newY + this.height) > (boundleRec.y + boundleRec.height) && checkHeight) {
-      return false;
-    } else {
+    }
+    // TODO : برای افزودن ارتفاع به گرید اصلی
+    // else if ((newY + this.height) > (boundleRec.y + boundleRec.height) && checkHeight) {
+    //   return false;
+    // }
+    else {
       return true;
     }
   }
