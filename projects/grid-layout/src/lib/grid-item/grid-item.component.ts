@@ -13,6 +13,7 @@ import { GridLayoutService } from '../grid-layout.service';
   styles: [
     `
     grid-item{
+      position:absolute;
       display: block;
       box-sizing: border-box;
       transition: transform 500ms ease 0s, width 500ms ease 0s, height 500ms ease 0s;
@@ -25,7 +26,9 @@ import { GridLayoutService } from '../grid-layout.service';
     directive: NgxDragableResizableDirective,
     // outputs: ['onDragEnd']
   }],
-
+  host: {
+    //  '[style.position]': '"absolute"'
+  }
 })
 export class GridItemComponent implements AfterViewInit, AfterContentInit {
   /** cell position */
@@ -39,7 +42,7 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
   y!: number;
   width!: number;
   height!: number;
-
+  index = 0;
   @Input() id: string = 'grid-item';
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -105,18 +108,30 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     let newHeight = event.height + this.gridService.rowHeight - bOffset;
     this.elementRef.nativeElement.style.width = `${newWidth}px`;
     this.elementRef.nativeElement.style.height = `${newHeight}px`;
+    this.height = newHeight;
+    this.width = newWidth;
     //---------------calc cells--------------
     this.position.w = Math.round(newWidth / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.h = Math.round(newHeight / (this.gridService.rowHeight + this.gridService.config.gap));
     this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
+    // set position in main layout
+    this.gridService.layout[this.index].height = this.position.h;
+    this.gridService.layout[this.index].width = this.position.w;
+    this.gridService.layout[this.index].x = this.position.x;
+    this.gridService.layout[this.index].y = this.position.y;
     this.gridService.calculateRenderData();
   }
 
   calcXY() {
     const selfBounding = this.elementRef.nativeElement.getBoundingClientRect();
     const parentBounding = this.gridService.gridLayout.el.getBoundingClientRect();
-    this.x = selfBounding.x - parentBounding.x;
-    this.y = selfBounding.y - parentBounding.y;
+    // scroll offset
+    var doc = document.documentElement;
+    var left = (window.scrollX || doc.scrollLeft) - (doc.clientLeft || 0);
+    var top = (window.scrollY || doc.scrollTop) - (doc.clientTop || 0);
+
+    this.x = selfBounding.x - parentBounding.x;//+ left;
+    this.y = selfBounding.y - parentBounding.y;// + top;
   }
 }

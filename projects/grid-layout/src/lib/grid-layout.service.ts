@@ -18,8 +18,10 @@ export class GridLayoutService {
 
 
   calculateRenderData() {
-    this.gridHeight = this.gridLayout._gridItem ? getBottomGrid(this.gridLayout._gridItem.toArray()) : 0;
-    console.log(this.gridHeight);
+   // setTimeout(() => {
+      this.gridHeight = this.gridLayout._gridItem ? getBottomGrid(this.layout, this.rowHeight, this.config.gap) : 0;
+      console.log(this.gridHeight);
+   // }, 100);
   }
 
 }
@@ -30,10 +32,11 @@ function getMaxGridItemHeight(layout: Layout[], rowHeight: number, gap: number):
 function getSumGridItemHeight(gridItem: GridItemComponent[]): number {
   return gridItem.reduce((sum, cur) => sum += (cur.y + cur.height), 0);
 }
-function getBottomGrid(gridItem: GridItemComponent[]): number {
-  let bottomEl;
+function getBottomGrid(layout: Layout[], rowHeight: number, gap: number): number {
+  let bottomEl = layout[0];
   let prvY = 0;
-  for (let item of gridItem) {
+
+  for (let item of layout) {
     //item.render();
     if (item.y + item.height > prvY) {
       prvY = item.y + item.height;
@@ -41,5 +44,6 @@ function getBottomGrid(gridItem: GridItemComponent[]): number {
     }
   }
   console.info('last element in bottom is:', bottomEl?.id);
-  return bottomEl ? (bottomEl.height + bottomEl.y) : 0;
+  const maxHeight = (bottomEl.y + bottomEl.height) * rowHeight + ((bottomEl.y + bottomEl.height - 1) * gap);
+  return maxHeight;
 }

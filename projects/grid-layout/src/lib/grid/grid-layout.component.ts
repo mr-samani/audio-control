@@ -11,7 +11,7 @@ import { GridLayoutService } from '../grid-layout.service';
   styleUrls: ['./grid-layout.component.scss'],
   encapsulation: ViewEncapsulation.None,
   host: {
-    //'[style.height.px]': 'gridService.gridHeight'
+    '[style.height.px]': 'gridService.gridHeight'
   }
 })
 export class GridLayoutComponent implements OnInit, AfterContentInit {
@@ -65,6 +65,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
           findedItem.position.h = this.gridService.layout[i].height;
           findedItem.position.x = this.gridService.layout[i].x;
           findedItem.position.y = this.gridService.layout[i].y;
+          findedItem.index = i;
           findedItem.render();
         }
       }
