@@ -1,6 +1,6 @@
 import {
   AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef,
-  HostBinding, Input, Renderer2, ViewEncapsulation, Inject
+  HostBinding, Input, Renderer2, ViewEncapsulation, Inject, AfterViewInit
 } from '@angular/core';
 import { NgxDragableResizableDirective } from '../directives/ngx-dragable-resizable.directive';
 import { DOCUMENT } from '@angular/common';
@@ -27,7 +27,7 @@ import { GridLayoutService } from '../grid-layout.service';
   }],
 
 })
-export class GridItemComponent implements AfterContentInit {
+export class GridItemComponent implements AfterViewInit, AfterContentInit {
   widthCell!: number;
   heightCell!: number;
   x!: number;
@@ -51,16 +51,29 @@ export class GridItemComponent implements AfterContentInit {
       this.onMoveResizeEnd(val);
     });
   }
-
+  ngAfterViewInit(): void {
+    // if (this.elementRef.nativeElement.getAnimations().length === 0) {
+    //   debugger
+    //   this.calcXY();
+    // } else {
+    //   debugger
+    //   this.elementRef.nativeElement.addEventListener('animationend', (ev) => {
+    //     debugger
+    //     this.calcXY();
+    //   });
+    // }
+  }
   ngAfterContentInit(): void {
     // this.render();
     this.dragResizeDirective.bounding = this.gridService.gridLayout.el;
+
   }
 
   render() {
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
+
     this._changeDetect.detectChanges();
 
   }
@@ -76,16 +89,27 @@ export class GridItemComponent implements AfterContentInit {
     const newY = (this.gridService.rowHeight / 2 < yOffset) ? event.translateY + (h - yOffset) : event.translateY - yOffset;
     this.dragResizeDirective.x = newX;
     this.dragResizeDirective.y = newY;
-    event.point.x = newX;
-    event.point.y = newY;
+    
     this.elementRef.nativeElement.style.transform = `translate(${newX}px,${newY}px)`;
-
-    // -------------------------
-    const rOffset = (event.point.x + event.width) % w;
-    const bOffset = (event.point.y + event.height) % h;
-    const newWidth = event.width + this.gridService.colWidth - rOffset; // this.gridService.colWidth / 2 < wOffset ? event.width - (w - wOffset) : event.width + wOffset;
-    const newHeight = event.height + this.gridService.rowHeight - bOffset; //this.gridService.rowHeight / 2 < hOffset ? event.height - (h - hOffset) : event.height + hOffset;
+    //---------------calc x,y---------------
+    this.calcXY();
+    // -------------resize------------
+    const rOffset = (this.x + event.width) % w;
+    const bOffset = (this.y + event.height) % h;
+    let newWidth = event.width + this.gridService.colWidth - rOffset;
+    let newHeight = event.height + this.gridService.rowHeight - bOffset;
     this.elementRef.nativeElement.style.width = `${newWidth}px`;
     this.elementRef.nativeElement.style.height = `${newHeight}px`;
+    //---------------calc cells--------------
+    this.widthCell = Math.round(newWidth / (this.gridService.colWidth + this.gridService.config.gap));
+    this.heightCell = Math.round(newHeight / (this.gridService.rowHeight + this.gridService.config.gap));
+    this.gridService.calculateRenderData();
+  }
+
+  calcXY() {
+    const selfBounding = this.elementRef.nativeElement.getBoundingClientRect();
+    const parentBounding = this.gridService.gridLayout.el.getBoundingClientRect();
+    this.x = selfBounding.x - parentBounding.x;
+    this.y = selfBounding.y - parentBounding.y;
   }
 }

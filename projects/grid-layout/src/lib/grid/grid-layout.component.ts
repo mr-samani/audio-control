@@ -10,7 +10,9 @@ import { GridLayoutService } from '../grid-layout.service';
   templateUrl: './grid-layout.component.html',
   styleUrls: ['./grid-layout.component.scss'],
   encapsulation: ViewEncapsulation.None,
-
+  host: {
+    //'[style.height.px]': 'gridService.gridHeight'
+  }
 })
 export class GridLayoutComponent implements OnInit, AfterContentInit {
   @Input('rowHieght') set _rowHeight(val: number) {
@@ -20,10 +22,13 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
   @Input('config') set _config(val: IConfiguration) {
     this.gridService.config = mergeConfig(this.gridService.config, val);
   }
-  @Input() layout: Layout[] = [];
+  @Input('layout') set _layout(val: Layout[]) {
+    this.gridService.layout = val ?? [];
+  }
   @ContentChildren(GridItemComponent, { descendants: true }) _gridItem?: QueryList<GridItemComponent>;
 
   el: HTMLElement;
+
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private gridService: GridLayoutService
@@ -44,19 +49,20 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
     console.log('rowHeight', this.gridService.rowHeight, 'colWidth', this.gridService.colWidth);
     this.render();
     this.setBackgroundCssVariables();
+    this.gridService.calculateRenderData();
   }
 
 
 
   render() {
-    for (let i = 0; i < this.layout.length; i++) {
+    for (let i = 0; i < this.gridService.layout.length; i++) {
       if (this._gridItem && this._gridItem.toArray()[i]) {
-        const findedItem = this._gridItem.find(x => x.id == this.layout[i].id);
+        const findedItem = this._gridItem.find(x => x.id == this.gridService.layout[i].id);
         if (findedItem) {
-          findedItem.width = this.gridService.colWidth * this.layout[i].width + this.gridService.config.gap * (this.layout[i].width - 1);
-          findedItem.height = this.gridService.rowHeight * this.layout[i].height + this.gridService.config.gap * (this.layout[i].height - 1);
-          findedItem.widthCell = this.layout[i].width;
-          findedItem.heightCell = this.layout[i].height;
+          findedItem.width = this.gridService.colWidth * this.gridService.layout[i].width + this.gridService.config.gap * (this.gridService.layout[i].width - 1);
+          findedItem.height = this.gridService.rowHeight * this.gridService.layout[i].height + this.gridService.config.gap * (this.gridService.layout[i].height - 1);
+          findedItem.widthCell = this.gridService.layout[i].width;
+          findedItem.heightCell = this.gridService.layout[i].height;
           findedItem.render();
         }
       }
@@ -92,4 +98,6 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
     }
   }
 
+
 }
+
