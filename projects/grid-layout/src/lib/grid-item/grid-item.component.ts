@@ -28,8 +28,13 @@ import { GridLayoutService } from '../grid-layout.service';
 
 })
 export class GridItemComponent implements AfterViewInit, AfterContentInit {
-  widthCell!: number;
-  heightCell!: number;
+  /** cell position */
+  position = {
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0
+  }
   x!: number;
   y!: number;
   width!: number;
@@ -89,7 +94,7 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     const newY = (this.gridService.rowHeight / 2 < yOffset) ? event.translateY + (h - yOffset) : event.translateY - yOffset;
     this.dragResizeDirective.x = newX;
     this.dragResizeDirective.y = newY;
-    
+
     this.elementRef.nativeElement.style.transform = `translate(${newX}px,${newY}px)`;
     //---------------calc x,y---------------
     this.calcXY();
@@ -101,8 +106,10 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.elementRef.nativeElement.style.width = `${newWidth}px`;
     this.elementRef.nativeElement.style.height = `${newHeight}px`;
     //---------------calc cells--------------
-    this.widthCell = Math.round(newWidth / (this.gridService.colWidth + this.gridService.config.gap));
-    this.heightCell = Math.round(newHeight / (this.gridService.rowHeight + this.gridService.config.gap));
+    this.position.w = Math.round(newWidth / (this.gridService.colWidth + this.gridService.config.gap));
+    this.position.h = Math.round(newHeight / (this.gridService.rowHeight + this.gridService.config.gap));
+    this.position.x = Math.round(this.x / (this.gridService.colWidth + this.gridService.config.gap));
+    this.position.y = Math.round(this.y / (this.gridService.rowHeight + this.gridService.config.gap));
     this.gridService.calculateRenderData();
   }
 
