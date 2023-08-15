@@ -1,18 +1,20 @@
 import { DOCUMENT } from '@angular/common';
 import {
+  AfterContentInit,
   AfterViewInit, Directive, ElementRef, EventEmitter,
   HostListener, Inject, Input, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { Position } from './position';
 
 
-
+declare type Corner = 'top' | 'right' | 'left' | 'bottom' |
+  'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
 
 @Directive({
   selector: '[NgxDragableResizable]',
   standalone: true
 })
-export class NgxDragableResizableDirective implements AfterViewInit {
+export class NgxDragableResizableDirective implements AfterViewInit, AfterContentInit {
   @Input() bounding: HTMLElement | null = null;
   @Input() minWidth = 20;
   @Input() minHeight = 20;
@@ -34,18 +36,13 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   protected draggingCorner: boolean;
   protected draggingWindow: boolean;
   protected resizer!: Function;
-  protected corners = ['top', 'right', 'left', 'bottom',
-    'topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+  protected corners: Corner[] = ['top', 'right', 'left', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
   protected widgetCornerResizeStyle = {
     'position': 'absolute',
     'width': '10px',
     'height': '10px',
-    // 'background': 'white',
-    // 'border': '2px #005aff solid',
-    // 'border-radius': '50px',
-    'margin': '0px',
+    // 'background': 'red',
     'visibility': 'visible',
-    'transition': 'margin 300ms'
   };
 
   protected topLeftResizeStyle = {
@@ -95,6 +92,11 @@ export class NgxDragableResizableDirective implements AfterViewInit {
     'width': '100%',
     'cursor': 'row-resize'
   };
+
+  protected borderTop = '';
+  protected borderRight = '';
+  protected borderBottom = '';
+  protected borderLeft = '';
   previousTransition = '';
   protected el: HTMLElement;
   constructor(
@@ -113,7 +115,7 @@ export class NgxDragableResizableDirective implements AfterViewInit {
     this.findFirstParentDragRootElement();
 
     if (this.resize) {
-      this.addCornerDiv();
+      this.addCornersToElement();
     }
     if (this.el.getAnimations().length === 0) {
       this.initSize();
@@ -125,6 +127,13 @@ export class NgxDragableResizableDirective implements AfterViewInit {
     }
   }
 
+  ngAfterContentInit(): void {
+    var style = getComputedStyle(this.el);
+    this.borderTop = style.borderTopWidth;
+    this.borderRight = style.borderRightWidth;
+    this.borderBottom = style.borderBottomWidth;
+    this.borderLeft = style.borderLeftWidth;
+  }
 
 
   findFirstParentDragRootElement() {
@@ -154,34 +163,6 @@ export class NgxDragableResizableDirective implements AfterViewInit {
   }
 
 
-  private addCornerDiv() {
-    for (const corner of this.corners) {
-      const child = this.document.createElement('div');
-      child.classList.add('widget-corner-resize', corner);
-      this.setStyle(child, this.widgetCornerResizeStyle);
-      const self: any = this;
-      this.setStyle(child, self[(corner + 'ResizeStyle')]);
-      child.addEventListener('mousedown', ($event) => {
-        this.onCornerClick($event, self[corner + 'Resize']);
-      });
-      child.addEventListener('touchstart', ($event) => {
-        this.onCornerTouch($event, self[corner + 'Resize']);
-      });
-      this.renderer.appendChild(this.el, child);
-    }
-  }
-
-
-  private setStyle(child: any, styleName: any) {
-    Object.keys(styleName).forEach(newStyle => {
-      // this.renderer.setStyle(
-      //   this.el, `${newStyle}`, styleName[newStyle]
-      // );
-      this.renderer.setStyle(
-        child, `${newStyle}`, styleName[newStyle]
-      );
-    });
-  }
 
   private initSize() {
     const elRec = this.el.getBoundingClientRect();
@@ -492,6 +473,70 @@ export class NgxDragableResizableDirective implements AfterViewInit {
     };
   }
 
+
+
+  /*---------------------------------------------------------------------------------*/
+  private setStyle(child: any, styleName: any) {
+    Object.keys(styleName).forEach(newStyle => {
+      // this.renderer.setStyle(
+      //   this.el, `${newStyle}`, styleName[newStyle]
+      // );
+      this.renderer.setStyle(
+        child, `${newStyle}`, styleName[newStyle]
+      );
+    });
+  }
+
+  private addCornersToElement() {
+    for (const corner of this.corners) {
+      const child = this.document.createElement('div');
+      child.classList.add('widget-corner-resize', corner);
+      this.setStyle(child, this.widgetCornerResizeStyle);
+      const self: any = this;
+
+      switch (corner) {
+        case 'top':
+          this.topResizeStyle.top = `calc(-${this.borderTop ?? 0})`;
+          break;
+        case 'right':
+          this.rightResizeStyle.right = `calc(-${this.borderRight ?? 0})`;
+          break;
+        case 'bottom':
+          this.bottomResizeStyle.bottom = `calc(-${this.borderBottom ?? 0})`;
+          break;
+        case 'left':
+          this.leftResizeStyle.left = `calc(-${this.borderLeft ?? 0})`;
+          break;
+        case 'topRight':
+          this.topRightResizeStyle.top = `calc(-${this.borderTop ?? 0})`;
+          this.topRightResizeStyle.right = `calc(-${this.borderRight ?? 0})`;
+          break;
+        case 'bottomRight':
+          this.bottomRightResizeStyle.right = `calc(-${this.borderRight ?? 0})`;
+          this.bottomRightResizeStyle.bottom = `calc(-${this.borderBottom ?? 0})`;
+          break;
+        case 'bottomLeft':
+          this.bottomLeftResizeStyle.left = `calc(-${this.borderLeft ?? 0})`;
+          this.bottomLeftResizeStyle.bottom = `calc(-${this.borderBottom ?? 0})`;
+          break;
+        case 'topLeft':
+          this.topLeftResizeStyle.left = `calc(-${this.borderLeft ?? 0})`;
+          this.topLeftResizeStyle.top = `calc(-${this.borderTop ?? 0})`;
+          break;
+      }
+      this.setStyle(child, self[(corner + 'ResizeStyle')]);
+      child.addEventListener('mousedown', ($event) => {
+        this.onCornerClick($event, self[corner + 'Resize']);
+      });
+      child.addEventListener('touchstart', ($event) => {
+        this.onCornerTouch($event, self[corner + 'Resize']);
+      });
+      this.renderer.appendChild(this.el, child);
+    }
+
+
+  }
+
 }
 
 
@@ -518,3 +563,4 @@ export function findParentBySelector(elm: HTMLElement, selector: string) {
   }
   return cur; //will return null if not found
 }
+
