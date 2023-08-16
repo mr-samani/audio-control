@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { GridLayoutComponent } from './grid/grid-layout.component';
 import { GridItemComponent } from '../public-api';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -10,6 +11,7 @@ import { GridItemComponent } from '../public-api';
     GridItemComponent,
   ],
   imports: [
+    CommonModule
   ],
   exports: [
     GridLayoutComponent,

@@ -80,16 +80,18 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.dragResizeDirective.bounding = this.gridService.gridLayout.el;
   }
 
-  render() {
+  /**
+   * draw grid item by layout
+   */
+  drawGridByLayout() {
     this.width = this.gridService.colWidth * this.position.w + this.gridService.config.gap * (this.position.w - 1);
     this.height = this.gridService.rowHeight * this.position.h + this.gridService.config.gap * (this.position.h - 1);
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
-    this.position = this.gridService.getFreePosition(this.position);
+    // this.position = this.gridService.getFreePosition(this.position);
     style.left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x) + 'px';
-    this.calcCell();
-    this._changeDetect.detectChanges();
+    style.top = this.gridService.rowHeight * this.position.y + this.gridService.config.gap * (this.position.y) + 'px';
   }
 
 
@@ -104,6 +106,8 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
       event.left,
       event.top
     );
+    this.calcCell();
+    this.checkLayoutOverlap(this.position);
   }
 
 
@@ -169,7 +173,6 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.position.y = Math.round(this.top / (this.gridService.rowHeight + this.gridService.config.gap));
     // set position in main layout
     this.gridService.layout[this.index] = this.position;
-    console.log(this.position);
   }
 
 
@@ -180,6 +183,21 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
 
 
 
+  checkLayoutOverlap(currL: Layout) {
+    for (let l of this.gridService.layout) {
+      if (l.id == currL.id || l.y > (currL.y + currL.h))
+        continue;
+      if (currL.x >= l.x && currL.x < (l.x + l.w)) {
+        console.log('overlap with:', l.id);
+        l.y = currL.y + currL.h;
+        let gridItem = this.gridService.gridLayout._gridItem?.find(x => x.id == l.id);
+        if (gridItem) {
+          gridItem.position.y = l.y;
+          gridItem.drawGridByLayout();
+        }
 
+      }
+    }
+  }
 
 }

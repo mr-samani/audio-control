@@ -11,8 +11,8 @@ export class GridComponent {
   rtl = false;
   layout: Layout[] = [
     { id: 'i1', w: 2, h: 3, x: 0, y: 0 },
-    { id: 'i2', w: 3, h: 9, x: 0, y: 0 },
-    { id: 'i3', w: 1, h: 1, x: 0, y: 0 },
+    { id: 'i2', w: 3, h:5, x: 3, y: 0 },
+    { id: 'i3', w: 1, h: 1, x: 8, y: 0 },
   ];
   config: IConfiguration = {
     cols: 12,

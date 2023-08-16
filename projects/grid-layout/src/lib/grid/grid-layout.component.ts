@@ -63,7 +63,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
         if (findedItem) {
           findedItem.position = this.gridService.layout[i];
           findedItem.index = i;
-          findedItem.render();
+          findedItem.drawGridByLayout();
         }
       }
     }
