@@ -128,7 +128,7 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
   /** Destroys the placeholder element and its ViewRef. */
   destroyPlaceholder() {
-    this.placeholder?.remove();
+   // this.placeholder?.remove();
     //this.placeholderRef?.destroy();
     //this.placeholder = this.placeholderRef = null!;
   }

@@ -90,9 +90,9 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     style.width = this.width + 'px';
     style.height = this.height + 'px';
     // this.position = this.gridService.getFreePosition(this.position);
-    style.left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x) + 'px';
-    style.top = this.gridService.rowHeight * this.position.y + this.gridService.config.gap * (this.position.y) + 'px';
-    this.elementRef.nativeElement.style.transform = `translate(${0}px,${0}px)`;
+    let left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x);
+    let top = this.gridService.rowHeight * this.position.y + this.gridService.config.gap * (this.position.y);
+    this.elementRef.nativeElement.style.transform = `translate(${left}px,${top}px)`;
   }
 
 
@@ -104,8 +104,8 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
       newPos.newY,
       this.width,
       this.height,
-      event.left,
-      event.top
+      0,
+      0
     );
     this.calcCell();
     this.gridService.checkLayoutOverlap(this.position);

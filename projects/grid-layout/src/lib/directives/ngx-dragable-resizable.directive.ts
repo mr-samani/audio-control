@@ -32,8 +32,6 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
   protected py: number;
   x: number = 0;
   y: number = 0;
-  protected left!: number;
-  protected top!: number;
   protected draggingCorner: boolean;
   protected draggingWindow: boolean;
   protected resizer!: Function;
@@ -169,10 +167,20 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
     const elRec = this.el.getBoundingClientRect();
     this.width = elRec.width;
     this.height = elRec.height;
-    this.left = this.el.offsetLeft;
-    this.top = this.el.offsetTop;
-    this.el.style.top = this.top + 'px';
-    this.el.style.left = this.left + 'px';
+    // دریافت مقادیر استایل transform
+    var computedStyle = window.getComputedStyle(this.el);
+    var transformValue = computedStyle.getPropertyValue('transform');
+
+    // تجزیه و تحلیل مقدار transform
+    var matrix = transformValue.match(/^matrix\((.+)\)$/);
+    if (matrix) {
+      var matrixValues = matrix[1].split(', ');
+      var translateX = parseInt(matrixValues[4], 10); // مقدار جابجایی در جهت left
+      var translateY = parseInt(matrixValues[5], 10); // مقدار جابجایی در جهت top
+      this.x = translateX;
+      this.y = translateY;
+
+    }
     this.setElPosition();
   }
 
@@ -463,17 +471,15 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
     this.el.style.width = this.width + 'px';
     this.el.style.height = this.height + 'px';
   }
-  public getPosition() {
+  public getPosition(): Position {
     return {
       translateY: this.y,
       translateX: this.x,
-      top: this.top,
-      left: this.left,
       width: this.width,
       height: this.height,
       point: {
-        x: this.x + this.left,
-        y: this.y + this.top
+        x: this.x,
+        y: this.y
       }
     };
   }
