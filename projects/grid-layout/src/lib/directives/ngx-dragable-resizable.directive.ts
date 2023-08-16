@@ -22,7 +22,8 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
   @Input() drag = true;
   @Input() dragRootElement = '';
   @Output() onDrag: EventEmitter<Position> = new EventEmitter<Position>();
-  @Output() readonly onDragEnd: EventEmitter<Position> = new EventEmitter<Position>();
+  @Output() onDragStart: EventEmitter<Position> = new EventEmitter<Position>();
+  @Output() onDragEnd: EventEmitter<Position> = new EventEmitter<Position>();
   @Output() onResize: EventEmitter<Position> = new EventEmitter<Position>();
   @Output() onResizeEnd: EventEmitter<Position> = new EventEmitter<Position>();
   protected width!: number;
@@ -234,7 +235,7 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
     this.px = event.touches[0].clientX;
     this.py = event.touches[0].clientY;
     this.initSize();
-
+    this.onDragStart.emit(this.getPosition());
   }
 
 
@@ -251,6 +252,7 @@ export class NgxDragableResizableDirective implements AfterViewInit, AfterConten
     this.px = event.clientX;
     this.py = event.clientY;
     this.initSize();
+    this.onDragStart.emit(this.getPosition());
 
   }
 

@@ -101,23 +101,13 @@ export class GridLayoutComponent implements OnInit, AfterContentInit {
 
 
   /** Creates placeholder element */
-  createPlaceholderElement(clientRect: Position) {
+  createPlaceholderElement(newX: number, newY: number, width: number, height: number, left: number, top: number) {
     if (!this.placeholder)
       this.placeholder = this.renderer.createElement('div');
-    this.placeholder!.style.width = `${clientRect.width}px`;
-    this.placeholder!.style.height = `${clientRect.height}px`;
-    this.placeholder!.style.left = `${clientRect.left}px`;
-    this.placeholder!.style.top = `${clientRect.top}px`;
-
-    const h = this.gridService.rowHeight + this.gridService.config.gap;
-    const w = this.gridService.colWidth + this.gridService.config.gap;
-    const yOffset = clientRect.point.y % h;
-    const xOffset = clientRect.point.x % w;
-    //  console.log('offSetX', xOffset, 'offSetY', yOffset);
-
-    const newX = (this.gridService.colWidth / 2 < xOffset) ? clientRect.translateX + (w - xOffset) : clientRect.translateX - xOffset;
-    const newY = (this.gridService.rowHeight / 2 < yOffset) ? clientRect.translateY + (h - yOffset) : clientRect.translateY - yOffset;
-
+    this.placeholder!.style.width = `${width}px`;
+    this.placeholder!.style.height = `${height}px`;
+    this.placeholder!.style.left = `${left}px`;
+    this.placeholder!.style.top = `${top}px`;
     this.placeholder!.style.transform = `translateX(${newX}px) translateY(${newY}px)`;
     this.placeholder!.classList.add('grid-item-placeholder');
     this.renderer.appendChild(this.elementRef.nativeElement, this.placeholder);

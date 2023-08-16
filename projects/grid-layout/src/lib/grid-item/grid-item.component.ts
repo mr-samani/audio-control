@@ -18,6 +18,7 @@ import { Layout } from '../models/layout';
       display: block;
       box-sizing: border-box;
       transition: transform 500ms ease 0s, width 500ms ease 0s, height 500ms ease 0s;
+      z-index: 1;
     }
     `
   ],
@@ -34,8 +35,10 @@ import { Layout } from '../models/layout';
 export class GridItemComponent implements AfterViewInit, AfterContentInit {
   /** cell position */
   position = new Layout();
-  top!: number;
-  left!: number;
+  /** top of grid -no document */
+  top = 0;
+  /** left of grid -no document */
+  left = 0;
   width!: number;
   height!: number;
   index = 0;
@@ -49,15 +52,15 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     private gridService: GridLayoutService
   ) {
     dragResizeDirective.onDragEnd.subscribe(val => {
-      this.onMoveResizeEnd(val);
+      this.onMoveEnd(val);
     });
     dragResizeDirective.onResizeEnd.subscribe(val => {
-      this.onMoveResizeEnd(val);
+      this.onResizeEnd(val);
     });
     dragResizeDirective.onDrag.subscribe(val => {
-      this.onMoveResizeItem(val);
+      this.onDrag(val);
     });
-  
+
   }
   ngAfterViewInit(): void {
     // if (this.elementRef.nativeElement.getAnimations().length === 0) {
@@ -83,40 +86,47 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     let style = this.elementRef.nativeElement.style;
     style.width = this.width + 'px';
     style.height = this.height + 'px';
-
-
     this.position = this.gridService.getFreePosition(this.position);
     style.left = this.gridService.colWidth * this.position.x + this.gridService.config.gap * (this.position.x) + 'px';
-    // to do if rtl decrease left
-    this.calcXY();
     this.calcCell();
     this._changeDetect.detectChanges();
   }
 
 
-  onMoveResizeItem(event: Position) {
-    this.gridService.gridLayout.createPlaceholderElement(event);
+
+  onDrag(event: Position) {
+    const newPos = this.recalculateNewPosition(event);
+    this.gridService.gridLayout.createPlaceholderElement(
+      newPos.newX,
+      newPos.newY,
+      this.width,
+      this.height,
+      event.left,
+      event.top
+    );
   }
 
 
 
-  onMoveResizeEnd(event: Position) {
+  onMoveEnd(event: Position) {
+    const newPos = this.recalculateNewPosition(event);
+    this.dragResizeDirective.x = newPos.newX;
+    this.dragResizeDirective.y = newPos.newY;
+    this.elementRef.nativeElement.style.transform = `translate(${newPos.newX}px,${newPos.newY}px)`;
+    this.calcCell();
+    this.gridService.calculateRenderData();
+    this.gridService.gridLayout.destroyPlaceholder();
+  }
+
+
+  onResizeEnd(event: Position) {
+    const newPos = this.recalculateNewPosition(event);
+    this.dragResizeDirective.x = newPos.newX;
+    this.dragResizeDirective.y = newPos.newY;
+    this.elementRef.nativeElement.style.transform = `translate(${newPos.newX}px,${newPos.newY}px)`;
 
     const h = this.gridService.rowHeight + this.gridService.config.gap;
     const w = this.gridService.colWidth + this.gridService.config.gap;
-    const yOffset = event.point.y % h;
-    const xOffset = event.point.x % w;
-    //  console.log('offSetX', xOffset, 'offSetY', yOffset);
-
-    const newX = (this.gridService.colWidth / 2 < xOffset) ? event.translateX + (w - xOffset) : event.translateX - xOffset;
-    const newY = (this.gridService.rowHeight / 2 < yOffset) ? event.translateY + (h - yOffset) : event.translateY - yOffset;
-    this.dragResizeDirective.x = newX;
-    this.dragResizeDirective.y = newY;
-
-    this.elementRef.nativeElement.style.transform = `translate(${newX}px,${newY}px)`;
-    //---------------calc x,y---------------
-    this.calcXY();
-    // -------------resize------------
     const rOffset = (this.left + event.width) % w;
     const bOffset = (this.top + event.height) % h;
     let newWidth = event.width + this.gridService.colWidth - rOffset;
@@ -125,32 +135,41 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
     this.elementRef.nativeElement.style.height = `${newHeight}px`;
     this.height = newHeight;
     this.width = newWidth;
-    //---------------calc cells--------------
     this.calcCell();
-    this.gridService.calculateRenderData();
-    this.gridService.gridLayout.destroyPlaceholder();
   }
 
-  calcXY() {
-    const selfBounding = this.elementRef.nativeElement.getBoundingClientRect();
-    const parentBounding = this.gridService.gridLayout.el.getBoundingClientRect();
-    // scroll offset
-    var doc = document.documentElement;
-    var left = (window.scrollX || doc.scrollLeft) - (doc.clientLeft || 0);
-    var top = (window.scrollY || doc.scrollTop) - (doc.clientTop || 0);
 
-    this.left = selfBounding.x - parentBounding.x;//+ left;
-    this.top = selfBounding.y - parentBounding.y;// + top;
+
+  recalculateNewPosition(event: Position) {
+    const h = this.gridService.rowHeight + this.gridService.config.gap;
+    const w = this.gridService.colWidth + this.gridService.config.gap;
+    const yOffset = event.point.y % h;
+    const xOffset = event.point.x % w;
+    //  console.log('offSetX', xOffset, 'offSetY', yOffset);
+    const newX = (this.gridService.colWidth / 2 < xOffset) ? event.translateX + (w - xOffset) : event.translateX - xOffset;
+    const newY = (this.gridService.rowHeight / 2 < yOffset) ? event.translateY + (h - yOffset) : event.translateY - yOffset;
+    return { newX, newY };
   }
+
+
+
+
 
 
   calcCell() {
+    const selfBounding = this.elementRef.nativeElement.getBoundingClientRect();
+    const parentBounding = this.gridService.gridLayout.el.getBoundingClientRect();
+
+    this.left = selfBounding.x - parentBounding.x;//+ left;
+    this.top = selfBounding.y - parentBounding.y;// + top;
+
     this.position.w = Math.round(this.width / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.h = Math.round(this.height / (this.gridService.rowHeight + this.gridService.config.gap));
     this.position.x = Math.round(this.left / (this.gridService.colWidth + this.gridService.config.gap));
     this.position.y = Math.round(this.top / (this.gridService.rowHeight + this.gridService.config.gap));
     // set position in main layout
     this.gridService.layout[this.index] = this.position;
+    console.log(this.position);
   }
 
 

@@ -15,11 +15,11 @@ export class GridLayoutService {
   gridHeight = 300;
   constructor() { }
 
-
-
   calculateRenderData() {
     // setTimeout(() => {
-    this.gridHeight = this.gridLayout._gridItem ? getBottomGrid(this.layout, this.rowHeight, this.config.gap) : 0;
+    this.gridHeight = this.gridLayout._gridItem
+      ? getBottomGrid(this.layout, this.rowHeight, this.config.gap)
+      : 0;
     console.log(this.gridHeight);
     // }, 100);
   }
@@ -30,7 +30,7 @@ export class GridLayoutService {
       return position;
     }
     if (position.x >= l.x && position.x < (l.x + l.w)) {
-      position.x = l.x + l.w ;
+      position.x = l.x + l.w;
       this.getFreePosition(position, ++i);
     }
     return position;
