@@ -40,28 +40,9 @@ export class GridLayoutService {
 
   checkLayoutOverlap(currL: Layout) {
     for (let l of this.layout) {
-      const x1 = currL.x;
-      const x2 = currL.x + currL.w;
-      const x3 = currL.y;
-      const x4 = currL.y + currL.h;
-
-      const y1 = l.x;
-      const y2 = l.x + l.w;
-      const y3 = l.y;
-      const y4 = l.y + l.h;
-
-      if (l.id == currL.id || l.y >= (currL.y + currL.h))
+      if (l.id == currL.id)
         continue;
-      if (
-        //overlap is left
-        (x1 >= y1 && x1 < y2) &&
-        //overlap is right
-        (x2 >= y1 && x2 < y2) &&
-        //overlap is top 
-        (x3 >= y3 && x3 < y4) &&
-        //overlap is bottom
-        (x4 >= y3 && x4 < y4)
-      ) {
+      if (collides(currL,l) ) {
         console.log('overlap with:', l.id);
         l.y = currL.y + currL.h;
         let gridItem = this.gridLayout._gridItem?.find(x => x.id == l.id);
@@ -71,13 +52,30 @@ export class GridLayoutService {
           this.calculateRenderData();
           this.checkLayoutOverlap(gridItem.position);
         }
-
       }
     }
   }
 }
 
 /*------------------------------------------------------*/
+export function collides(l1: Layout, l2: Layout): boolean {
+  if (l1.id === l2.id) {
+      return false;
+  } // same element
+  if (l1.x + l1.w <= l2.x) {
+      return false;
+  } // l1 is left of l2
+  if (l1.x >= l2.x + l2.w) {
+      return false;
+  } // l1 is right of l2
+  if (l1.y + l1.h <= l2.y) {
+      return false;
+  } // l1 is above l2
+  if (l1.y >= l2.y + l2.h) {
+      return false;
+  } // l1 is below l2
+  return true; // boxes overlap
+}
 
 
 
