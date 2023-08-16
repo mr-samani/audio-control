@@ -36,6 +36,45 @@ export class GridLayoutService {
     return position;
   }
 
+
+
+  checkLayoutOverlap(currL: Layout) {
+    for (let l of this.layout) {
+      const x1 = currL.x;
+      const x2 = currL.x + currL.w;
+      const x3 = currL.y;
+      const x4 = currL.y + currL.h;
+
+      const y1 = l.x;
+      const y2 = l.x + l.w;
+      const y3 = l.y;
+      const y4 = l.y + l.h;
+
+      if (l.id == currL.id || l.y >= (currL.y + currL.h))
+        continue;
+      if (
+        //overlap is left
+        (x1 >= y1 && x1 < y2) &&
+        //overlap is right
+        (x2 >= y1 && x2 < y2) &&
+        //overlap is top 
+        (x3 >= y3 && x3 < y4) &&
+        //overlap is bottom
+        (x4 >= y3 && x4 < y4)
+      ) {
+        console.log('overlap with:', l.id);
+        l.y = currL.y + currL.h;
+        let gridItem = this.gridLayout._gridItem?.find(x => x.id == l.id);
+        if (gridItem) {
+          gridItem.position.y = l.y;
+          gridItem.drawGridByLayout();
+          this.calculateRenderData();
+          this.checkLayoutOverlap(gridItem.position);
+        }
+
+      }
+    }
+  }
 }
 
 /*------------------------------------------------------*/
