@@ -42,8 +42,8 @@ export class GridLayoutService {
     for (let l of this.layout) {
       if (l.id == currL.id)
         continue;
-      if (collides(currL,l) ) {
-        console.log('overlap with:', l.id);
+      if (collides(currL, l)) {
+        // console.log('overlap with:', l.id);
         l.y = currL.y + currL.h;
         let gridItem = this.gridLayout._gridItem?.find(x => x.id == l.id);
         if (gridItem) {
@@ -53,26 +53,85 @@ export class GridLayoutService {
           this.checkLayoutOverlap(gridItem.position);
         }
       }
+
     }
   }
+
+
+  compactLayout(g: GridItemComponent) {
+    for (let i = 0; i < this.layout.length; i++) {
+      if (g && g.id == this.layout[i].id)
+        continue;
+      let gridItem = this.gridLayout._gridItem?.find(x => x.id == this.layout[i].id);
+      if (gridItem) {
+        // Bottom 'y' possible is the bottom of the layout.
+        // This allows you to do nice stuff like specify {y: Infinity}
+        // This is here because the layout must be sorted in order to get the correct bottom `y`.
+        // this.layout[i].y = Math.min(bottom(this.layout),this.layout[i].y)+1;
+        let cloned = JSON.parse(JSON.stringify(gridItem.position));
+        cloned.y--;
+        while (this.layout[i].y > 0 && !getFirstCollision(this.layout, cloned)) {
+          this.layout[i].y--;
+        }
+        gridItem.drawGridByLayout();
+      }
+    }
+  }
+
+
+
+
 }
+/**
+ * Return the bottom coordinate of the layout.
+ *
+ * @param  {Array} layout Layout array.
+ * @return {Number}       Bottom coordinate.
+ */
+export function bottom(layout: Layout[]): number {
+  let max = 0,
+    bottomY;
+  for (let i = 0, len = layout.length; i < len; i++) {
+    bottomY = layout[i].y + layout[i].h;
+    if (bottomY > max) {
+      max = bottomY;
+    }
+  }
+  return max;
+}
+
+/**
+ * Returns the first item this layout collides with.
+ * It doesn't appear to matter which order we approach this from, although
+ * perhaps that is the wrong thing to do.
+ *
+ */
+export function getFirstCollision(layouts: Layout[], layoutItem: Layout,): Layout | null | undefined {
+  for (let i = 0, len = layouts.length; i < len; i++) {
+    if (collides(layouts[i], layoutItem)) {
+      return layouts[i];
+    }
+  }
+  return null;
+}
+
 
 /*------------------------------------------------------*/
 export function collides(l1: Layout, l2: Layout): boolean {
   if (l1.id === l2.id) {
-      return false;
+    return false;
   } // same element
   if (l1.x + l1.w <= l2.x) {
-      return false;
+    return false;
   } // l1 is left of l2
   if (l1.x >= l2.x + l2.w) {
-      return false;
+    return false;
   } // l1 is right of l2
   if (l1.y + l1.h <= l2.y) {
-      return false;
+    return false;
   } // l1 is above l2
   if (l1.y >= l2.y + l2.h) {
-      return false;
+    return false;
   } // l1 is below l2
   return true; // boxes overlap
 }

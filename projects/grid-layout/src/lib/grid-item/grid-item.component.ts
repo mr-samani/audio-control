@@ -108,7 +108,9 @@ export class GridItemComponent implements AfterViewInit, AfterContentInit {
       0
     );
     this.calcCell();
+    //TODO: performance اگر یک خانه تغییر کرده بود باید صدا زده شود
     this.gridService.checkLayoutOverlap(this.position);
+    this.gridService.compactLayout(this);
   }
 
 
