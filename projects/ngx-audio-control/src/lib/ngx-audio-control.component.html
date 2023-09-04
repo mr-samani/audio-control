@@ -1,10 +1,13 @@
 <div class="audio-player">
     loading={{loading}}
+    <audio preload="metadata" #audio>
+        <source [src]="currentFileAddress" />
+    </audio>
     <div class="controls">
         <div class="time-seeker">
             <span> {{currentTime}}</span>
-            <input class="seek-slider" id="seekSlider" [value]="seekValue" type="range" [min]="0" [max]="100" value="0"
-                step=".1" (input)="seekAudio($event)">
+            <input class="seek-slider" id="seekSlider" type="range" [min]="seekSlider.min" [max]="seekSlider.max"
+                [value]="seekSlider.value" step=".1" (input)="seekAudio($event)">
             <span> {{totalTime}}</span>
         </div>
         <div class="buttons">
@@ -15,12 +18,12 @@
                 </svg>
             </button>
 
-            <button (click)="playPause()" id="playPauseButton" [title]="isPaused?'play':'pause'">
-                <svg *ngIf="!isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <button (click)="playPause()" id="playPauseButton" [title]="audio.paused?'play':'pause'">
+                <svg *ngIf="!audio.paused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                     <path
                         d="M56 64C42.75 64 32 74.75 32 88v336C32 437.3 42.75 448 56 448s24-10.75 24-24V88C80 74.75 69.25 64 56 64zM264 64c-13.25 0-24 10.75-24 24v336c0 13.25 10.75 24 24 24S288 437.3 288 424V88C288 74.75 277.3 64 264 64z" />
                 </svg>
-                <svg *ngIf="isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <svg *ngIf="audio.paused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                     <path
                         d="M24.52 38.13C39.66 29.64 58.21 29.99 73.03 39.04L361 215C375.3 223.8 384 239.3 384 256C384 272.7 375.3 288.2 361 296.1L73.03 472.1C58.21 482 39.66 482.4 24.52 473.9C9.377 465.4 0 449.4 0 432V80C0 62.64 9.377 46.63 24.52 38.13V38.13zM48 432L336 256L48 80V432z" />
                 </svg>
@@ -34,11 +37,11 @@
             </button>
             <div class="volume-control">
                 <button (click)="muteUnmute()" id="muteUnmuteButton" title="mute volume">
-                    <svg *ngIf="!isMuted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                    <svg *ngIf="!audio.muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                         <path
                             d="M333.2 34.84c-4.201-1.896-8.729-2.841-13.16-2.841c-7.697 0-15.29 2.784-21.27 8.1L163.8 160H80c-26.51 0-48 21.49-48 47.1v95.1c0 26.51 21.49 47.1 48 47.1h83.84l134.9 119.9C304.7 477.2 312.3 480 320 480c4.438 0 8.959-.9312 13.16-2.837C344.7 472 352 460.6 352 448V64C352 51.41 344.7 39.1 333.2 34.84zM304 412.4L182.1 304H80v-95.1h102.1L304 99.64V412.4zM444.6 181.9c-4.471-3.629-9.857-5.401-15.2-5.401c-6.949 0-13.83 2.994-18.55 8.807c-8.406 10.25-6.906 25.37 3.375 33.78C425.5 228.4 432 241.8 432 256s-6.5 27.62-17.81 36.87c-10.28 8.406-11.78 23.53-3.375 33.78c4.719 5.812 11.62 8.812 18.56 8.812c5.344 0 10.75-1.781 15.19-5.406C467.1 311.6 480 284.7 480 256C480 227.3 467.1 200.4 444.6 181.9zM505.1 108c-4.455-3.637-9.842-5.417-15.2-5.417c-6.934 0-13.82 2.979-18.58 8.761c-8.406 10.25-6.906 25.37 3.344 33.78C508.6 172.9 528 213.3 528 256c0 42.69-19.44 83.09-53.31 110.9c-10.25 8.406-11.75 23.53-3.344 33.78c4.75 5.781 11.62 8.781 18.56 8.781c5.375 0 10.75-1.781 15.22-5.437C550.2 367.1 576 313.1 576 256C576 198.9 550.2 144.9 505.1 108z" />
                     </svg>
-                    <svg *ngIf="isMuted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                    <svg *ngIf="audio.muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                         <path
                             d="M301.2 34.85c-4.201-1.896-8.74-2.848-13.17-2.848c-7.697 0-15.29 2.784-21.27 8.1L131.8 160H48c-26.51 0-48 21.49-48 47.1v95.1c0 26.51 21.49 47.1 48 47.1h83.84l134.9 119.9c5.984 5.312 13.58 8.094 21.26 8.094c4.438 0 8.972-.9375 13.17-2.844c11.5-5.156 18.82-16.56 18.82-29.16V64C319.1 51.41 312.7 40 301.2 34.85zM272 412.4L150.1 304H48v-95.1h102.1L272 99.64V412.4zM513.9 255.1l47.03-47.03c9.375-9.375 9.375-24.56 0-33.94s-24.56-9.375-33.94 0L480 222.1L432.1 175c-9.375-9.375-24.56-9.375-33.94 0s-9.375 24.56 0 33.94l47.03 47.03l-47.03 47.03c-9.375 9.375-9.375 24.56 0 33.94c9.373 9.373 24.56 9.381 33.94 0L480 289.9l47.03 47.03c9.373 9.373 24.56 9.381 33.94 0c9.375-9.375 9.375-24.56 0-33.94L513.9 255.1z" />
                     </svg>
@@ -91,9 +94,9 @@
 <pre>
     this.currentAudioIndex = {{currentAudioIndex}};
     this.speedDisplay = {{speedDisplay}};
-    this.seekValue = {{seekValue}};
-    this.isPaused = {{isPaused}};
-    this.isMuted = {{isMuted}};
+    seekValue = {{seekSlider.value}};
+    isPaused = {{audio.paused}};
+    isMuted = {{audio.muted}};
     this.currentTime = {{currentTime}};
     this.totalTime = {{totalTime}};
  

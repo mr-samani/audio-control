@@ -1,24 +1,28 @@
-# NgxAudioControl
+# for chrome seek 
+## IIS web.config
+```
+<system.webServer>
+  <httpProtocol>
+    <customHeaders>
+      <add name="Accept-Ranges" value="bytes" />
+    </customHeaders>
+  </httpProtocol>
+</system.webServer>
+```
+## Appache .htaccess
+```
+<IfModule mod_headers.c>
+    Header set Accept-Ranges bytes
+</IfModule>
+```
+## NginX nginx.conf
+```
+http {
+    server {
+        location / {
+            add_header Accept-Ranges bytes;
+        }
+    }
+}
+```
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.0.
-
-## Code scaffolding
-
-Run `ng generate component component-name --project ngx-audio-control` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-audio-control`.
-> Note: Don't forget to add `--project ngx-audio-control` or else it will be added to the default project in your `angular.json` file. 
-
-## Build
-
-Run `ng build ngx-audio-control` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ngx-audio-control`, go to the dist folder `cd dist/ngx-audio-control` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-audio-control` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
