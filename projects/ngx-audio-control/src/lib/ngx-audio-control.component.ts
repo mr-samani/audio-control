@@ -8,8 +8,8 @@ import { PlayList } from '../models/play-list';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent implements OnInit {
-  @Input() playList = true;
-  @Input() download = true;
+  @Input() showList: boolean = true;
+  @Input() download: boolean = true;
   @Input() fileList: string[] = [];
 
   downloading = false;
@@ -27,7 +27,7 @@ export class NgxAudioControlComponent implements OnInit {
   options = {
     emptyListMessage: 'No any record'
   };
-  showPlayList = false;
+  togglePlayList = false;
 
   currentAudioIndex = 0;
   currentFileAddress = '';
