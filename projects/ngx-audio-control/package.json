@@ -1,12 +1,29 @@
 {
   "name": "ngx-audio-control",
   "version": "0.0.1",
+  "private": false,
   "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
+    "@angular/common": ">=8.2.14",
+    "@angular/core": ">=8.2.14"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "homepage": "https://mr-samani.github.io/pkgs/player",
+  "preview": true,
+  "sideEffects": false,
+  "keywords": [
+    "Audio",
+    "Audio player",
+    "Player",
+    "Seek Audio",
+    "Audio Speed",
+    "Sound",
+    "Music",
+    "Media",
+    "Media Player",
+    "Play List"
+  ],
+  "author": "mohammadreza samani",
+  "license": "ISC"
 }

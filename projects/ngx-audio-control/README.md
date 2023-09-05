@@ -1,5 +1,11 @@
-# for chrome seek 
+> # **Warning**: `This package is currently being tested. Please do not use it for now`
+
+![](assets/20230905_132033_player.jpg)
+
+# for seek audio file in chrome
+
 ## IIS web.config
+
 ```
 <system.webServer>
   <httpProtocol>
@@ -9,13 +15,17 @@
   </httpProtocol>
 </system.webServer>
 ```
+
 ## Appache .htaccess
+
 ```
 <IfModule mod_headers.c>
     Header set Accept-Ranges bytes
 </IfModule>
 ```
+
 ## NginX nginx.conf
+
 ```
 http {
     server {
@@ -25,4 +35,3 @@ http {
     }
 }
 ```
-
