@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } fr
 import { formatTime } from '../helper/format-time';
 import { PlayList } from '../models/play-list';
 import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { buffer, finalize } from 'rxjs';
 
 @Component({
   selector: 'ngx-audio-control',
@@ -10,9 +10,7 @@ import { finalize } from 'rxjs';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent implements OnInit {
-  loading = false;
-
-  isReady = false;
+  fileInfo = '';
   speedDisplay = '1x';
   audioFiles: PlayList[] = [];
   @Input() set fileList(value: string[]) {
@@ -43,7 +41,8 @@ export class NgxAudioControlComponent implements OnInit {
     min: 0,
     max: 0,
     value: 0
-  }
+  };
+  buffering = false;
   constructor(
     private http: HttpClient,
     private changeDetector: ChangeDetectorRef
@@ -51,10 +50,12 @@ export class NgxAudioControlComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.audio.nativeElement.onloadedmetadata = () => {
+    this.audio.nativeElement.onloadedmetadata = (ev) => {
       this.seekSlider.max = this.audio.nativeElement.duration;
       this.totalTime = formatTime(this.audio.nativeElement.duration);
     };
+    this.audio.nativeElement.onloadstart = () => this.buffering = true;
+    this.audio.nativeElement.onloadeddata = () => this.buffering = false;
     this.audio.nativeElement.ontimeupdate = () => {
       this.seekSlider.value = this.audio.nativeElement.currentTime;
       this.currentTime = formatTime(this.audio.nativeElement.currentTime);
@@ -75,6 +76,7 @@ export class NgxAudioControlComponent implements OnInit {
     this.stop();
     if (this.audioFiles.length > 0 && this.audioFiles[this.currentAudioIndex]) {
       this.currentFileAddress = this.audioFiles[this.currentAudioIndex].fileAddress;
+      this.fileInfo = this.audioFiles[this.currentAudioIndex].title;
       this.audio.nativeElement.load();
     }
     if (playAfterLoad) {
@@ -105,15 +107,6 @@ export class NgxAudioControlComponent implements OnInit {
   muteUnmute() {
     this.audio.nativeElement.muted = !this.audio.nativeElement.muted;
   }
-
-  // updateSeekSlider() {
-  //   if (!this.audio.nativeElement.paused) {
-  //     //this.seekValue = (this._audioContext.currentTime / this._buffer.duration) * 100;
-  //     this.currentTime = '';// formatTime(this._audioContext.currentTime);
-  //     this.changeDetector.detectChanges();
-  //   }
-  // }
-
 
 
   seekAudio(ev: Event) {
