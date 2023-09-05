@@ -1,6 +1,6 @@
 {
   "name": "ngx-audio-control",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "private": false,
   "peerDependencies": {
     "@angular/common": ">=8.2.14",

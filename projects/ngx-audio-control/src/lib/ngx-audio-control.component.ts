@@ -15,17 +15,9 @@ export class NgxAudioControlComponent implements OnInit {
   fileInfo = '';
   speedDisplay = '1x';
   audioFiles: PlayList[] = [];
-  @Input() set fileList(value: string[]) {
-    const files = value ?? [];
-    this.audioFiles = [];
-    for (let item of files) {
-      this.audioFiles.push({
-        fileAddress: item,
-        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
-      });
-    }
-    this.initialize();
-  }
+  @Input('fileList') fileList: string[] = [];
+
+
 
 
 
@@ -50,6 +42,16 @@ export class NgxAudioControlComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.audioFiles = [];
+    for (let item of this.fileList) {
+      this.audioFiles.push({
+        fileAddress: item,
+        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
+      });
+    }
+    this.initialize();
+
+
     this.audio.nativeElement.onloadedmetadata = (ev) => {
       this.seekSlider.max = this.audio.nativeElement.duration;
       this.totalTime = formatTime(this.audio.nativeElement.duration);
