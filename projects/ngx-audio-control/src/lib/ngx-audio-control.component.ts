@@ -1,8 +1,6 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { formatTime } from '../helper/format-time';
 import { PlayList } from '../models/play-list';
-import { HttpClient } from '@angular/common/http';
-import { buffer, finalize } from 'rxjs';
 
 @Component({
   selector: 'ngx-audio-control',
@@ -10,6 +8,10 @@ import { buffer, finalize } from 'rxjs';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent implements OnInit {
+  @Input() playList = true;
+  @Input() download = true;
+  downloading = false;
+
   fileInfo = '';
   speedDisplay = '1x';
   audioFiles: PlayList[] = [];
@@ -44,8 +46,6 @@ export class NgxAudioControlComponent implements OnInit {
   };
   buffering = false;
   constructor(
-    private http: HttpClient,
-    private changeDetector: ChangeDetectorRef
   ) {
   }
 
@@ -156,6 +156,21 @@ export class NgxAudioControlComponent implements OnInit {
     this.initialize(this.currentAudioIndex, true);
   }
 
-
+  downloadCurrentFile() {
+    if (!this.currentFileAddress)
+      return;
+    this.downloading = true;
+    var a: any = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = this.currentFileAddress;
+    a.download = this.fileInfo;
+    a.click();
+    window.URL.revokeObjectURL(this.currentFileAddress);
+    a.remove();
+    setTimeout(() => {
+      this.downloading = false;
+    }, 1000);
+  }
 
 }
