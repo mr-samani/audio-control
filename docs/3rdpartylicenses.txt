@@ -66,9 +66,13 @@ MIT
 @angular/router
 MIT
 
+grid-layout
+
 ngx-alert-modal
+ISC
 
 ngx-audio-control
+ISC
 
 rxjs
 Apache-2.0

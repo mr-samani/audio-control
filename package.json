@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --port=6969 --host=0.0.0.0",
-    "build": "ng build",
+    "build": "ng build demo",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "publish-ngx-alert-modal": "ng build ngx-alert-modal --configuration production && cd dist/ngx-alert-modal && npm publish",
