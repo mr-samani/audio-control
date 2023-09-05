@@ -10,12 +10,13 @@ import { PlayList } from '../models/play-list';
 export class NgxAudioControlComponent implements OnInit {
   @Input() playList = true;
   @Input() download = true;
+  @Input() fileList: string[] = [];
+
   downloading = false;
 
   fileInfo = '';
   speedDisplay = '1x';
   audioFiles: PlayList[] = [];
-  @Input('fileList') fileList: string[] = [];
 
 
 
