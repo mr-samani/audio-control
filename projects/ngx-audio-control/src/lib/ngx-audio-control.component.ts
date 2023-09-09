@@ -10,6 +10,9 @@ import { PlayList } from '../models/play-list';
 export class NgxAudioControlComponent implements OnInit {
   @Input() showList: boolean = true;
   @Input() download: boolean = true;
+  @Input() showFileName: boolean = true;
+  @Input() showSpeed: boolean = true;
+  @Input() linear: boolean = false;
   @Input() set fileList(val: string[]) {
     this.audioFiles = [];
     if (!val || Array.isArray(val) == false) {
@@ -26,7 +29,7 @@ export class NgxAudioControlComponent implements OnInit {
 
   downloading = false;
 
-  fileInfo = '';
+  fineName = '';
   speedDisplay = '1x';
   audioFiles: PlayList[] = [];
 
@@ -50,6 +53,7 @@ export class NgxAudioControlComponent implements OnInit {
     value: 0
   };
   buffering = false;
+  errorLoad = false;
   constructor(
   ) {
   }
@@ -59,11 +63,29 @@ export class NgxAudioControlComponent implements OnInit {
 
 
     this.audio.nativeElement.onloadedmetadata = (ev) => {
-      this.seekSlider.max = this.audio.nativeElement.duration;
-      this.totalTime = formatTime(this.audio.nativeElement.duration);
-    };
-    this.audio.nativeElement.onloadstart = () => this.buffering = true;
-    this.audio.nativeElement.onloadeddata = () => this.buffering = false;
+      this.getDuration(ev).then(duration => {
+        this.seekSlider.max = duration;
+        this.totalTime = formatTime(duration);
+      });
+    }
+    this.audio.nativeElement.onloadstart = () => {
+      this.buffering = true;
+      this.errorLoad = false;
+    }
+    this.audio.nativeElement.onloadeddata = () => {
+      this.buffering = false;
+      this.errorLoad = false;
+    }
+    this.audio.nativeElement.addEventListener('error', (e) => {
+      this.buffering = false;
+      this.errorLoad = true;
+      var noSourcesLoaded = ((e.currentTarget as any).networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
+      if (noSourcesLoaded)
+        console.error('player', "could not load audio source");
+      else
+        console.error('player', 'unknow error!');
+    }, true);
+
     this.audio.nativeElement.ontimeupdate = () => {
       this.seekSlider.value = this.audio.nativeElement.currentTime;
       this.currentTime = formatTime(this.audio.nativeElement.currentTime);
@@ -84,7 +106,7 @@ export class NgxAudioControlComponent implements OnInit {
     this.stop();
     if (this.audioFiles.length > 0 && this.audioFiles[this.currentAudioIndex]) {
       this.currentFileAddress = this.audioFiles[this.currentAudioIndex].fileAddress;
-      this.fileInfo = this.audioFiles[this.currentAudioIndex].title;
+      this.fineName = this.audioFiles[this.currentAudioIndex].title;
       this.audio.nativeElement.load();
     }
     if (playAfterLoad) {
@@ -172,7 +194,7 @@ export class NgxAudioControlComponent implements OnInit {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = this.currentFileAddress;
-    a.download = this.fileInfo;
+    a.download = this.fineName;
     a.click();
     window.URL.revokeObjectURL(this.currentFileAddress);
     a.remove();
@@ -180,5 +202,31 @@ export class NgxAudioControlComponent implements OnInit {
       this.downloading = false;
     }, 1000);
   }
+
+
+  getDuration(ev: Event): Promise<number> {
+    return new Promise(async (resolve, reject) => {
+      if (this.audio.nativeElement.duration != Infinity) {
+        resolve(this.audio.nativeElement.duration);
+        return;
+      }
+
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioFilePath = this.currentFileAddress;
+      try {
+        const response = await fetch(audioFilePath);
+        const arrayBuffer = await response.arrayBuffer();
+
+        audioContext.decodeAudioData(arrayBuffer, ({ duration }) => {
+          resolve(duration);
+        });
+      } catch (error) {
+        console.error('duration:', error);
+        reject(error);
+      }
+    });
+  }
+
+
 
 }
