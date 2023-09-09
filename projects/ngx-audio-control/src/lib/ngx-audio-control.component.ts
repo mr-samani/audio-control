@@ -10,7 +10,19 @@ import { PlayList } from '../models/play-list';
 export class NgxAudioControlComponent implements OnInit {
   @Input() showList: boolean = true;
   @Input() download: boolean = true;
-  @Input() fileList: string[] = [];
+  @Input() set fileList(val: string[]) {
+    this.audioFiles = [];
+    if (!val || Array.isArray(val) == false) {
+      return;
+    }
+    for (let item of val) {
+      this.audioFiles.push({
+        fileAddress: item,
+        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
+      });
+    }
+    this.initialize();
+  }
 
   downloading = false;
 
@@ -43,14 +55,7 @@ export class NgxAudioControlComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.audioFiles = [];
-    for (let item of this.fileList) {
-      this.audioFiles.push({
-        fileAddress: item,
-        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
-      });
-    }
-    this.initialize();
+
 
 
     this.audio.nativeElement.onloadedmetadata = (ev) => {
