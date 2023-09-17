@@ -69,8 +69,9 @@
                         d="M512 96.03v319.9c0 17.67-14.33 31.1-31.1 31.1C462.3 447.1 448 433.6 448 415.1V96.03c0-17.67 14.33-31.1 31.1-31.1C497.7 64.03 512 78.36 512 96.03z" />
                 </svg>
             </button>
-            <div class="volume-control">
-                <button (click)="muteUnmute()" id="muteUnmuteButton" title="mute volume" [class.is-active]="audio.muted">
+            <div class="volume-control" *ngIf="showVolume">
+                <button (click)="muteUnmute()" id="muteUnmuteButton" title="mute volume"
+                    [class.is-active]="audio.muted">
                     <svg *ngIf="!audio.muted" viewBox="0 0 640 512">
                         <defs>
                             <style>

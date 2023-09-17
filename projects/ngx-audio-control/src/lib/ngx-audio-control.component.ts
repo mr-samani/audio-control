@@ -25,6 +25,10 @@ export class NgxAudioControlComponent implements OnInit {
    */
   @Input() showSpeed: boolean = true;
   /**
+ * Show volume control 
+ */
+  @Input() showVolume: boolean = true;
+  /**
    * Display vertically or horizontally between control buttons and range seeker
    */
   @Input() linear: boolean = false;

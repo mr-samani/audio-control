@@ -1,7 +1,7 @@
 {
   "name": "ngx-audio-control",
-  "description": "Audio Player control for angular projects with speed control by native player in browser",
-  "version": "0.0.12",
+  "description": "Audio Player control for angular projects with speed control by native player in browser (HTML5)",
+  "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": ">=14.2.0",
     "@angular/core": ">=14.2.0"
@@ -23,6 +23,10 @@
     "Media Player",
     "Play List"
   ],
-  "author": "mohammadreza samani",
-  "license": "ISC"
+  "author": {
+    "name": "Mohammadreza Samani",
+    "email": "Mr.samani1368@gmail.com",
+    "url": "https://www.npmjs.com/~mr-samani"
+  },
+  "license": "MIT"
 }
