@@ -1,6 +1,6 @@
 <div class="audio-player" [class.linear]="linear">
     <span class="file-info" *ngIf="showFileName">{{fineName}}</span>
-    <audio preload="metadata" #audio>
+    <audio [preload]="preload" #audio>
         <source [src]="currentFileAddress" />
     </audio>
     <div class="controls">
@@ -70,7 +70,7 @@
                 </svg>
             </button>
             <div class="volume-control">
-                <button (click)="muteUnmute()" id="muteUnmuteButton" title="mute volume">
+                <button (click)="muteUnmute()" id="muteUnmuteButton" title="mute volume" [class.is-active]="audio.muted">
                     <svg *ngIf="!audio.muted" viewBox="0 0 640 512">
                         <defs>
                             <style>
@@ -116,7 +116,8 @@
                     </svg>
                 </button>
             </div>
-            <button *ngIf="showList" (click)="togglePlayList=!togglePlayList" title="Play list">
+            <button *ngIf="showList" (click)="togglePlayList=!togglePlayList" title="Play list"
+                [class.is-active]="togglePlayList">
                 <svg viewBox="0 0 512 512">
                     <defs>
                         <style>
@@ -156,7 +157,7 @@
 
 
 <!-- --------- play list -------------- -->
-<div class="play-list" *ngIf="togglePlayList">
+<div class="play-list" *ngIf="togglePlayList" [class.linear]="linear">
     <div class="list-item disabled" *ngIf="audioFiles.length===0">
         {{options.emptyListMessage}}
     </div>

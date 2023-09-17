@@ -8,11 +8,45 @@ import { PlayList } from '../models/play-list';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent implements OnInit {
+  /**
+   * Show play list button
+   */
   @Input() showList: boolean = true;
-  @Input() download: boolean = true;
+  /**
+   * Show download button
+   */
+  @Input() download: boolean = false;
+  /**
+   * Display filename in header
+   */
   @Input() showFileName: boolean = true;
+  /**
+   * Show speed control 
+   */
   @Input() showSpeed: boolean = true;
+  /**
+   * Display vertically or horizontally between control buttons and range seeker
+   */
   @Input() linear: boolean = false;
+  /**
+ This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:
+
+    * #### `none`:  
+    Indicates that the audio should not be preloaded.
+    #### `metadata`:
+    Indicates that only audio metadata (e.g. length) is fetched.
+    #### `auto`: 
+    Indicates that the whole audio file can be downloaded, even if the user is not expected to use it.
+    
+    ## Usage notes:
+    The autoplay attribute has precedence over preload. If autoplay is specified, the browser would obviously need to start downloading the audio for playback.
+    The browser is not forced by the specification to follow the value of this attribute; it is a mere hint.
+    ## Default value is `metadata`
+   */
+  @Input() preload: 'none' | 'metadata' | 'auto' = 'metadata';
+  /**
+   * An array list of file addresses in the form of strings
+   */
   @Input() set fileList(val: string[]) {
     this.audioFiles = [];
     if (!val || Array.isArray(val) == false) {
@@ -59,15 +93,13 @@ export class NgxAudioControlComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-
-
     this.audio.nativeElement.onloadedmetadata = (ev) => {
-      this.getDuration(ev).then(duration => {
+      this.getDuration().then(duration => {
         this.seekSlider.max = duration;
         this.totalTime = formatTime(duration);
       });
     }
+
     this.audio.nativeElement.onloadstart = () => {
       this.buffering = true;
       this.errorLoad = false;
@@ -92,7 +124,7 @@ export class NgxAudioControlComponent implements OnInit {
     };
   }
 
-  initialize(currentAudioIndex = 0, playAfterLoad = false) {
+  private initialize(currentAudioIndex = 0, playAfterLoad = false) {
     this.speedDisplay = '1x';
     this.currentTime = '00:00';
     this.totalTime = '00:00';
@@ -126,6 +158,12 @@ export class NgxAudioControlComponent implements OnInit {
 
   play(offset = 0) {
     this.audio.nativeElement.play();
+    if (this.seekSlider.max == Infinity) {
+      this.getDuration(true).then(duration => {
+        this.seekSlider.max = duration;
+        this.totalTime = formatTime(duration);
+      });
+    }
   }
 
   stop() {
@@ -204,9 +242,10 @@ export class NgxAudioControlComponent implements OnInit {
   }
 
 
-  getDuration(ev: Event): Promise<number> {
+  private getDuration(play = false): Promise<number> {
     return new Promise(async (resolve, reject) => {
-      if (this.audio.nativeElement.duration != Infinity) {
+      if (this.audio.nativeElement.duration != Infinity ||
+        (this.preload !== 'auto' && !play)) {
         resolve(this.audio.nativeElement.duration);
         return;
       }
@@ -216,8 +255,8 @@ export class NgxAudioControlComponent implements OnInit {
       try {
         const response = await fetch(audioFilePath);
         const arrayBuffer = await response.arrayBuffer();
-
         audioContext.decodeAudioData(arrayBuffer, ({ duration }) => {
+          audioContext.close();
           resolve(duration);
         });
       } catch (error) {

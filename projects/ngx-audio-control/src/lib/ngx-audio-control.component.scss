@@ -18,6 +18,7 @@
         .controls {
             display: flex;
             flex-wrap: wrap;
+            flex-direction: row-reverse;
         }
     }
 }
@@ -64,6 +65,14 @@ button {
     &:disabled {
         cursor: not-allowed;
         background-color: #e5e5e5;
+    }
+
+    &.is-active {
+        background-color: #007BFF;
+
+        svg {
+            fill: #ffffff;
+        }
     }
 }
 
