@@ -1,3 +1,9 @@
+::ng-deep {
+    ngx-audio-control {
+        display: contents;
+    }
+}
+
 .audio-player,
 .play-list {
     background-color: #ffffff;
@@ -8,7 +14,6 @@
     position: relative;
     overflow: hidden;
     direction: ltr;
-    // max-width: calc(100vw - 40px);
     max-width: 100%;
 
     &:not(.linear) {

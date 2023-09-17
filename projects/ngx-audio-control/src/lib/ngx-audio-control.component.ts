@@ -48,6 +48,11 @@ export class NgxAudioControlComponent implements OnInit {
     ## Default value is `metadata`
    */
   @Input() preload: 'none' | 'metadata' | 'auto' = 'metadata';
+
+  /**
+   * set header when duration is inifinity and require call fetch request for get duration
+   */
+  @Input() fetchHeaders: HeadersInit | undefined = undefined;
   /**
    * An array list of file addresses in the form of strings
    */
@@ -257,7 +262,9 @@ export class NgxAudioControlComponent implements OnInit {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const audioFilePath = this.currentFileAddress;
       try {
-        const response = await fetch(audioFilePath);
+        const response = await fetch(audioFilePath, {
+          headers: this.fetchHeaders
+        });
         const arrayBuffer = await response.arrayBuffer();
         audioContext.decodeAudioData(arrayBuffer, ({ duration }) => {
           audioContext.close();
