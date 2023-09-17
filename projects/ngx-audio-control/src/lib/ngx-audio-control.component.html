@@ -12,7 +12,7 @@
             <div class="simp-buffer" *ngIf="buffering"></div>
         </div>
         <div class="buttons">
-            <button (click)="previous()" title="previous" *ngIf="audioFiles.length > 0">
+            <button (click)="previous()" title="previous" *ngIf="audioFiles.length > 1">
                 <svg viewBox="0 0 512 512">
                     <defs>
                         <style>
@@ -54,7 +54,7 @@
                 </svg>
             </button>
 
-            <button (click)="next()" title="next" *ngIf="audioFiles.length > 0">
+            <button (click)="next()" title="next" *ngIf="audioFiles.length > 1">
                 <svg viewBox="0 0 512 512">
                     <defs>
                         <style>
