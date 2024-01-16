@@ -64,7 +64,7 @@ export class NgxAudioControlComponent implements OnInit {
     for (let item of val) {
       this.audioFiles.push({
         fileAddress: item,
-        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
+        title: (decodeURIComponent(item).replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
       });
     }
     this.initialize();
@@ -92,7 +92,7 @@ export class NgxAudioControlComponent implements OnInit {
   @ViewChild('audio', { static: true }) audio!: ElementRef<HTMLAudioElement>;
   seekSlider = {
     min: 0,
-    max: 0,
+    max: Infinity,
     value: 0
   };
   buffering = false;
@@ -141,7 +141,7 @@ export class NgxAudioControlComponent implements OnInit {
     this.currentFileAddress = '';
     this.seekSlider = {
       min: 0,
-      max: 0,
+      max: Infinity,
       value: 0
     }
     this.stop();
@@ -253,7 +253,7 @@ export class NgxAudioControlComponent implements OnInit {
 
   private getDuration(play = false): Promise<number> {
     return new Promise(async (resolve, reject) => {
-      if (this.audio.nativeElement.duration != Infinity ||
+      if (Number.isInteger(+this.audio.nativeElement.duration) ||
         (this.preload !== 'auto' && !play)) {
         resolve(this.audio.nativeElement.duration);
         return;
