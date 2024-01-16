@@ -9,6 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgxAlertModalModule } from 'projects/ngx-alert-modal/src/public-api';
+
+
+
 @NgModule({
   declarations: [
     AlertComponent
@@ -22,7 +26,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSelectModule,
     MatCardModule,
     MatButtonModule,
-    MatCheckboxModule
-  ]
+    MatCheckboxModule,
+    // NgxAlertModalModule,
+    // NgxAlertModalModule.forRoot({
+    //   text: 'jjjjjjj',
+    //   confirmButtonText: 'ali'
+    // })
+  ],
 })
 export class AlertModule { }
