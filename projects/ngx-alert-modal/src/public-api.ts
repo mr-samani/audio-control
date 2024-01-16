@@ -4,7 +4,6 @@
 
 export * from './lib/ngx-alert-modal.service';
 export * from './lib/ngx-alert-modal.component';
-export * from './lib/ngx-alert-modal.module';
 
 export * from './models/alert-result';
 export * from './models/options';

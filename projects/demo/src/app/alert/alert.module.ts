@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AlertComponent } from './alert.component';
 import { AlertRoutingModule } from './alert-routing.module';
-import { NgxAlertModalModule } from 'projects/ngx-alert-modal/src/public-api';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +16,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   imports: [
     CommonModule,
     AlertRoutingModule,
-    NgxAlertModalModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,

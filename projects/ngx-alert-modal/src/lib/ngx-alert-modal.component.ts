@@ -2,11 +2,16 @@ import { Component, HostListener } from '@angular/core';
 import { AlertOptions } from '../models/options';
 import { Observable, Subject } from 'rxjs';
 import { AlertResult, DismissReason } from '../models/alert-result';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'lib-ngx-alert-modal',
   templateUrl: 'ngx-alert-modal.component.html',
-  styleUrls: ['./ngx-alert-modal.component.scss', './ngx-alert-icons.scss']
+  styleUrls: ['./ngx-alert-modal.component.scss', './ngx-alert-icons.scss'],
+  standalone: true,
+  imports: [
+    CommonModule
+  ]
 })
 export class NgxAlertModalComponent {
   options!: AlertOptions;
