@@ -1,9 +1,11 @@
 import {
   ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector,
 } from '@angular/core';
-import { AlertOptions } from '../models/options';
+import { NGX_ALERT_CONFIG, defaultOptions, } from '../models/AlertOptions';
+import { IAlertOptions } from "../models/IAlertOptions";
 import { NgxAlertModalComponent } from './ngx-alert-modal.component';
 import { AlertResult } from '../models/alert-result';
+import { applyDefaultConfig } from '../helper/apply-default';
 
 
 @Injectable({
@@ -20,8 +22,9 @@ export class NgxAlertModalService {
   ) { }
 
 
-  public show(config: AlertOptions): Promise<AlertResult<any>> {
-    config = { ...(new AlertOptions()), ...config };
+  public show(config: IAlertOptions): Promise<AlertResult<any>> {
+    let d = applyDefaultConfig(this.injector.get(NGX_ALERT_CONFIG, defaultOptions), defaultOptions);
+    config = applyDefaultConfig(config, d);
     return new Promise((resolve, reject) => {
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(NgxAlertModalComponent);
       const componentRef = componentFactory.create(this.injector);
@@ -47,7 +50,7 @@ export class NgxAlertModalService {
     }
   }
 
-  private appendDialogComponentToBody(componentRef: ComponentRef<NgxAlertModalComponent>, config: AlertOptions) {
+  private appendDialogComponentToBody(componentRef: ComponentRef<NgxAlertModalComponent>, config: IAlertOptions) {
     const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
     if (config.containerClass) {
       for (let c of config.containerClass.split(' ')) {

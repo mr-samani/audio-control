@@ -1,15 +1,27 @@
 import { Component, HostListener } from '@angular/core';
-import { AlertOptions } from '../models/options';
-import { Observable, Subject } from 'rxjs';
+import { IAlertOptions } from "../models/IAlertOptions";
+import { Subject } from 'rxjs';
 import { AlertResult, DismissReason } from '../models/alert-result';
+import { CommonModule } from '@angular/common';
+import { NGX_ALERT_CONFIG, defaultOptions } from '../public-api';
 
 @Component({
   selector: 'lib-ngx-alert-modal',
   templateUrl: 'ngx-alert-modal.component.html',
-  styleUrls: ['./ngx-alert-modal.component.scss', './ngx-alert-icons.scss']
+  styleUrls: ['./ngx-alert-modal.component.scss', './ngx-alert-icons.scss'],
+  standalone: true,
+  imports: [
+    CommonModule
+  ],
+  providers: [
+    {
+      provide: NGX_ALERT_CONFIG,
+      useValue: defaultOptions
+    }
+  ]
 })
 export class NgxAlertModalComponent {
-  options!: AlertOptions;
+  options!: IAlertOptions;
   index = 0;
 
   private readonly _onClose = new Subject<{ index: number, result: AlertResult<any> }>();

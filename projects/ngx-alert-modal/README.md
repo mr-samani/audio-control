@@ -1,9 +1,9 @@
 # NgxAlertModal
 
+Angular modal/Alert/Popup
 
 Simple popup modal 
-
-like sweetalert2 and fix bug show in legacy browser 
+like sweetalert2
 
 ## 📦Demo
 Preview [Demo](https://mr-samani.github.io/pkgs/alert)
@@ -13,19 +13,10 @@ Preview [Demo](https://mr-samani.github.io/pkgs/alert)
 - NPM: npm i ngx-alert-modal
 - YARN: yarn add ngx-alert-modal
 
+## Standalone
+
 ## 🖥️Usage
-Import  `NgxAlertModalModule`  to your working module
-```
-import { NgxAlertModalModule } from  'ngx-alert-modal';
 
-@NgModule({
-  imports: [
-    NgxAlertModalModule 
-  ]
-})
-export class AppModule { }
-
-```
 ## 💬For open popup
 ```
 import { Component, OnInit } from '@angular/core';
@@ -60,6 +51,40 @@ export class DemoComponent implements OnInit {
 
 }
 ```
+
+## Setting Global Options
+Pass values to NgxAlertModalModule.forRoot() or provider to set global options.
+
+- Module based
+```
+// app NgModule
+imports: [
+  NgxAlertModalModule.forRoot({
+    confirmButtonText: 'تائید',
+    cancelButtonText: 'انصراف',
+    ...
+  }),
+],
+
+```
+- Provider
+```
+import { NGX_ALERT_CONFIG } from 'ngx-alert-modal';
+
+// app NgModule
+providers:[
+   {
+      provide: NGX_ALERT_CONFIG, useValue: {
+          confirmButtonText: 'تائید',
+          cancelButtonText: 'انصراف',
+          ...
+      }
+    }
+]
+```
+
+
+
 
 ## ⚙️Options
 

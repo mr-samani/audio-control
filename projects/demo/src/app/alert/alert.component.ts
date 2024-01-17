@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertResult } from 'projects/ngx-alert-modal/src/models/alert-result';
-import { AlertOptions } from 'projects/ngx-alert-modal/src/models/options';
+import { AlertOptions } from 'projects/ngx-alert-modal/src/models/AlertOptions';
 import { NgxAlertModalService } from 'projects/ngx-alert-modal/src/public-api';
 
 @Component({

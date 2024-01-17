@@ -8,24 +8,75 @@ import { PlayList } from '../models/play-list';
   styleUrls: ['./ngx-audio-control.component.scss']
 })
 export class NgxAudioControlComponent implements OnInit {
-  @Input() playList = true;
-  @Input() download = true;
-  downloading = false;
+  /**
+   * Show play list button
+   */
+  @Input() showList: boolean = true;
+  /**
+   * Show download button
+   */
+  @Input() download: boolean = false;
+  /**
+   * Display filename in header
+   */
+  @Input() showFileName: boolean = true;
+  /**
+   * Show speed control 
+   */
+  @Input() showSpeed: boolean = true;
+  /**
+ * Show volume control 
+ */
+  @Input() showVolume: boolean = true;
+  /**
+   * Display vertically or horizontally between control buttons and range seeker
+   */
+  @Input() linear: boolean = false;
+  /**
+ This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:
 
-  fileInfo = '';
-  speedDisplay = '1x';
-  audioFiles: PlayList[] = [];
-  @Input() set fileList(value: string[]) {
-    const files = value ?? [];
+    * #### `none`:  
+    Indicates that the audio should not be preloaded.
+    #### `metadata`:
+    Indicates that only audio metadata (e.g. length) is fetched.
+    #### `auto`: 
+    Indicates that the whole audio file can be downloaded, even if the user is not expected to use it.
+    
+    ## Usage notes:
+    The autoplay attribute has precedence over preload. If autoplay is specified, the browser would obviously need to start downloading the audio for playback.
+    The browser is not forced by the specification to follow the value of this attribute; it is a mere hint.
+    ## Default value is `metadata`
+   */
+  @Input() preload: 'none' | 'metadata' | 'auto' = 'metadata';
+
+  /**
+   * set header when duration is inifinity and require call fetch request for get duration
+   */
+  @Input() fetchHeaders: HeadersInit | undefined = undefined;
+  /**
+   * An array list of file addresses in the form of strings
+   */
+  @Input() set fileList(val: string[]) {
     this.audioFiles = [];
-    for (let item of files) {
+    if (!val || Array.isArray(val) == false) {
+      return;
+    }
+    for (let item of val) {
       this.audioFiles.push({
         fileAddress: item,
-        title: (item.replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
+        title: (decodeURIComponent(item).replace(/\\/g, '/').split(/\//g).pop()) ?? 'no name'
       });
     }
     this.initialize();
   }
+
+  downloading = false;
+
+  fineName = '';
+  speedDisplay = '1x';
+  audioFiles: PlayList[] = [];
+
+
 
 
 
@@ -34,35 +85,55 @@ export class NgxAudioControlComponent implements OnInit {
   options = {
     emptyListMessage: 'No any record'
   };
-  showPlayList = false;
+  togglePlayList = false;
 
   currentAudioIndex = 0;
   currentFileAddress = '';
   @ViewChild('audio', { static: true }) audio!: ElementRef<HTMLAudioElement>;
   seekSlider = {
     min: 0,
-    max: 0,
+    max: Infinity,
     value: 0
   };
   buffering = false;
+  errorLoad = false;
   constructor(
   ) {
   }
 
   ngOnInit(): void {
     this.audio.nativeElement.onloadedmetadata = (ev) => {
-      this.seekSlider.max = this.audio.nativeElement.duration;
-      this.totalTime = formatTime(this.audio.nativeElement.duration);
-    };
-    this.audio.nativeElement.onloadstart = () => this.buffering = true;
-    this.audio.nativeElement.onloadeddata = () => this.buffering = false;
+      this.getDuration().then(duration => {
+        this.seekSlider.max = duration;
+        this.totalTime = formatTime(duration);
+      });
+    }
+
+    this.audio.nativeElement.onloadstart = () => {
+      this.buffering = true;
+      this.errorLoad = false;
+    }
+    this.audio.nativeElement.onloadeddata = () => {
+      this.buffering = false;
+      this.errorLoad = false;
+    }
+    this.audio.nativeElement.addEventListener('error', (e) => {
+      this.buffering = false;
+      this.errorLoad = true;
+      var noSourcesLoaded = ((e.currentTarget as any).networkState === HTMLMediaElement.NETWORK_NO_SOURCE);
+      if (noSourcesLoaded)
+        console.error('player', "could not load audio source");
+      else
+        console.error('player', 'unknow error!');
+    }, true);
+
     this.audio.nativeElement.ontimeupdate = () => {
       this.seekSlider.value = this.audio.nativeElement.currentTime;
       this.currentTime = formatTime(this.audio.nativeElement.currentTime);
     };
   }
 
-  initialize(currentAudioIndex = 0, playAfterLoad = false) {
+  private initialize(currentAudioIndex = 0, playAfterLoad = false) {
     this.speedDisplay = '1x';
     this.currentTime = '00:00';
     this.totalTime = '00:00';
@@ -70,13 +141,13 @@ export class NgxAudioControlComponent implements OnInit {
     this.currentFileAddress = '';
     this.seekSlider = {
       min: 0,
-      max: 0,
+      max: Infinity,
       value: 0
     }
     this.stop();
     if (this.audioFiles.length > 0 && this.audioFiles[this.currentAudioIndex]) {
       this.currentFileAddress = this.audioFiles[this.currentAudioIndex].fileAddress;
-      this.fileInfo = this.audioFiles[this.currentAudioIndex].title;
+      this.fineName = this.audioFiles[this.currentAudioIndex].title;
       this.audio.nativeElement.load();
     }
     if (playAfterLoad) {
@@ -96,6 +167,12 @@ export class NgxAudioControlComponent implements OnInit {
 
   play(offset = 0) {
     this.audio.nativeElement.play();
+    if (this.seekSlider.max == Infinity) {
+      this.getDuration(true).then(duration => {
+        this.seekSlider.max = duration;
+        this.totalTime = formatTime(duration);
+      });
+    }
   }
 
   stop() {
@@ -164,7 +241,7 @@ export class NgxAudioControlComponent implements OnInit {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = this.currentFileAddress;
-    a.download = this.fileInfo;
+    a.download = this.fineName;
     a.click();
     window.URL.revokeObjectURL(this.currentFileAddress);
     a.remove();
@@ -172,5 +249,34 @@ export class NgxAudioControlComponent implements OnInit {
       this.downloading = false;
     }, 1000);
   }
+
+
+  private getDuration(play = false): Promise<number> {
+    return new Promise(async (resolve, reject) => {
+      if (Number.isInteger(+this.audio.nativeElement.duration) ||
+        (this.preload !== 'auto' && !play)) {
+        resolve(this.audio.nativeElement.duration);
+        return;
+      }
+
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioFilePath = this.currentFileAddress;
+      try {
+        const response = await fetch(audioFilePath, {
+          headers: this.fetchHeaders
+        });
+        const arrayBuffer = await response.arrayBuffer();
+        audioContext.decodeAudioData(arrayBuffer, ({ duration }) => {
+          audioContext.close();
+          resolve(duration);
+        });
+      } catch (error) {
+        console.error('duration:', error);
+        reject(error);
+      }
+    });
+  }
+
+
 
 }

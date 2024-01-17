@@ -24,10 +24,10 @@ import { Layout } from '../models/layout';
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [{
-    directive: NgxDragableResizableDirective,
-    // outputs: ['onDragEnd']
-  }],
+  // hostDirectives: [{
+  //   directive: NgxDragableResizableDirective,
+  //   // outputs: ['onDragEnd']
+  // }],
   host: {
     //  '[style.position]': '"absolute"'
   }
