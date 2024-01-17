@@ -96,7 +96,7 @@ export interface IAlertOptions {
      *
      * @default 'OK'
      */
-    confirmButtonText: string;
+    confirmButtonText?: string;
 
     /**
      * Use this to change the text on the "Confirm" button.

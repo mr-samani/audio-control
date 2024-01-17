@@ -1,7 +1,7 @@
 import { Inject, InjectionToken } from "@angular/core";
 import { IAlertOptions } from "./IAlertOptions";
 
-export type AlertIcon = 'success' | 'error' | 'warning' | 'info' | 'question'
+export type AlertIcon = 'None' | 'success' | 'error' | 'warning' | 'info' | 'question'
 
 export const NGX_ALERT_CONFIG = new InjectionToken<IAlertOptions>('IAlertOptions');
 
@@ -10,7 +10,7 @@ export const defaultOptions: AlertOptions = {
     text: '',
     html: '',
     backdrop: true,
-    icon: 'success',
+    icon: 'None',
     width: undefined,
     allowOutsideClick: true,
     allowEscapeKey: true,
